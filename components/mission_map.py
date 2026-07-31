@@ -40,7 +40,7 @@ def _stage(state: MissionState):
         end = LOCATIONS["ploiesti"]
         progress = max(0.0, min(1.0, state.progress_percent / 45))
         return {
-            "title": "PROTOCOL EUROPA",
+            "title": "PROTOCOL EUROPA • BUILD 0.2.15",
             "subtitle": "Amersfoort → Ploiești",
             "start": start,
             "end": end,
