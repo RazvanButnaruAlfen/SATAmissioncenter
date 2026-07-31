@@ -1,253 +1,163 @@
 import base64
-import textwrap
 from pathlib import Path
+
 import streamlit as st
 import streamlit.components.v1 as components
+
 from core.mission_state import MissionState
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 AVATAR_DIR = BASE_DIR / "assets" / "avatars"
+MAP_DIR = BASE_DIR / "assets" / "maps"
 
-def _image_data(path: Path) -> str:
-    return base64.b64encode(path.read_bytes()).decode("ascii")
+
+def _data_uri(path: Path, mime: str) -> str:
+    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{mime};base64,{encoded}"
+
 
 def render_mission_map(state: MissionState) -> None:
-    razvan = _image_data(AVATAR_DIR / "razvan_avatar.png")
-    alexandra = _image_data(AVATAR_DIR / "alexandra_avatar.png")
+    razvan = _data_uri(AVATAR_DIR / "razvan_avatar.png", "image/png")
+    alexandra = _data_uri(AVATAR_DIR / "alexandra_avatar.png", "image/png")
 
-    is_europe = state.map_name == "europe"
-    vehicle = "✈" if state.vehicle == "plane" else "🚗"
-    map_title = "PROTOCOL EUROPA" if is_europe else "PROTOCOL ROMÂNIA"
-    map_label = "HARTA EUROPEI" if is_europe else "HARTA ROMÂNIEI"
-    left_place = "AMERSFOORT, OLANDA" if is_europe else state.location.upper()
-    right_place = "PLOIEȘTI, ROMÂNIA" if state.phase != "Brașov" else "BRAȘOV, ROMÂNIA"
-
-    if is_europe:
-        scene_progress = state.progress_percent
+    # Three visual stages:
+    # 1) Europe before 9 August
+    # 2) Romania between 9 and 13 August
+    # 3) Prahova–Brașov zoom from 14 August onward
+    if state.current_date.day < 9 and state.current_date.month == 8 or state.current_date.month < 8:
+        map_file = "europe.svg"
+        map_title = "HARTA EUROPEI"
+        protocol = "PROTOCOL EUROPA"
+        vehicle = "✈"
+        vehicle_name = "Avion"
+        left_place = "AMERSFOORT, OLANDA"
+        right_place = "PLOIEȘTI, ROMÂNIA"
+        scene_progress = max(4, min(96, state.progress_percent))
+    elif state.current_date.month == 8 and state.current_date.day < 14:
+        map_file = "romania.svg"
+        map_title = "HARTA ROMÂNIEI"
+        protocol = "PROTOCOL ROMÂNIA"
+        vehicle = "🚗"
+        vehicle_name = "Mașină"
+        left_place = "CLUJ-NAPOCA"
+        right_place = "PLOIEȘTI"
+        scene_progress = max(8, min(92, (state.progress_percent - 45) * 100 / 40))
     else:
-        scene_progress = max(8, min(100, (state.progress_percent - 45) * 100 / 55))
+        map_file = "prahova_brasov.svg"
+        map_title = "ZOOM PRAHOVA – BRAȘOV"
+        protocol = "PROTOCOL CONTACT"
+        vehicle = "🚗"
+        vehicle_name = "Mașină"
+        left_place = "PLOIEȘTI"
+        right_place = "BRAȘOV"
+        scene_progress = max(8, min(100, 25 if state.phase == "Ploiești" else 100))
+
+    map_uri = _data_uri(MAP_DIR / map_file, "image/svg+xml")
 
     html = r"""
     <style>
-    @keyframes sataPulse {
-        0%,100% { transform: scale(1); filter: brightness(1); }
-        50% { transform: scale(1.035); filter: brightness(1.13); }
+    html,body{margin:0;background:transparent;font-family:Arial,sans-serif;}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    .shell{
+      position:relative;overflow:hidden;border-radius:24px;padding:22px 30px 26px;color:#fff;
+      background:linear-gradient(145deg,#07111b,#101e2b 60%,#09131d);
+      border:1px solid #2b4354;min-height:690px;
     }
-    @keyframes routeGlow {
-        0%,100% { box-shadow: 0 0 10px rgba(63,169,255,.35); }
-        50% { box-shadow: 0 0 24px rgba(255,112,184,.55); }
+    .map-bg{
+      position:absolute;left:205px;right:205px;top:120px;bottom:120px;
+      background-image:url('__MAP_URI__');background-size:contain;background-position:center;background-repeat:no-repeat;
+      opacity:.82;filter:drop-shadow(0 0 18px rgba(43,125,180,.25));
     }
-    @keyframes vehicleFloat {
-        0%,100% { transform: translateY(0) rotate(-3deg); }
-        50% { transform: translateY(-7px) rotate(3deg); }
+    .head{position:relative;z-index:3;text-align:center}
+    .kicker{color:#62b9f2;font-weight:800;letter-spacing:.14em;font-size:13px}
+    .title{font-size:28px;font-weight:900;margin-top:4px}
+    .distance{font-size:54px;font-weight:900;color:#f49ac2;margin-top:8px}
+    .distance-label{color:#a7b9c7;font-size:13px;letter-spacing:.08em}
+    .mission-row{
+      position:relative;z-index:4;display:grid;grid-template-columns:190px 1fr 190px;
+      align-items:center;gap:0;margin-top:34px;min-height:330px;
     }
-    .mission-shell {
-        position:relative; overflow:hidden; border-radius:24px;
-        padding:22px 32px 24px; color:white;
-        background:
-          radial-gradient(circle at 25% 35%, rgba(31,117,180,.18), transparent 35%),
-          radial-gradient(circle at 77% 38%, rgba(214,62,137,.18), transparent 35%),
-          linear-gradient(145deg,#07111b,#101e2b 58%,#09131d);
-        border:1px solid #2b4354;
-        box-shadow:0 18px 42px rgba(0,0,0,.18);
-        margin-bottom:18px;
-    }
-    .mission-grid {
-        position:absolute; inset:0; opacity:.16;
-        background-image:
-          linear-gradient(rgba(110,165,200,.18) 1px,transparent 1px),
-          linear-gradient(90deg,rgba(110,165,200,.18) 1px,transparent 1px);
-        background-size:38px 38px;
-    }
-    .mission-head { position:relative; z-index:2; text-align:center; }
-    .mission-kicker { color:#62b9f2; font-weight:800; letter-spacing:.14em; font-size:.78rem; }
-    .mission-title { font-size:1.65rem; font-weight:900; margin-top:4px; }
-    .mission-distance { font-size:3rem; font-weight:900; color:#f49ac2; line-height:1.05; margin-top:10px; }
-    .mission-distance-label { color:#a7b9c7; font-size:.84rem; letter-spacing:.08em; }
-    .mission-row {
-        position:relative; z-index:2;
-        display:grid;
-        grid-template-columns:190px minmax(220px,1fr) 190px;
-        align-items:start;
-        gap:0;
-        margin-top:18px;
-        min-height:245px;
-    }
-    .avatar-card {
-        position:relative;
-        z-index:3;
-        text-align:center;
-    }
-    .avatar-card.left { grid-column:1; }
-    .avatar-card.right { grid-column:3; }
-    .avatar-img {
-        width:155px; height:155px; object-fit:cover;
-        animation:sataPulse 3.2s ease-in-out infinite;
-        filter:drop-shadow(0 0 20px rgba(65,170,255,.35));
-    }
-    .avatar-card.right .avatar-img {
-        filter:drop-shadow(0 0 20px rgba(255,105,180,.38));
-        animation-delay:.6s;
-    }
-    .avatar-name { font-size:1.35rem; font-weight:900; margin-top:4px; }
-    .avatar-card.left .avatar-name { color:#56b7ff; }
-    .avatar-card.right .avatar-name { color:#ff82bf; }
-    .avatar-place { font-size:.75rem; color:#c4d0da; margin-top:3px; }
-
-    .route-track {
-        position:absolute;
-        z-index:1;
-        left:95px;
-        right:95px;
-        top:76px;
-        height:70px;
-    }
-    .route-base {
-        position:absolute;
-        left:0;
-        right:0;
-        top:0;
-        height:7px;
-        border-radius:12px;
-        background:#30495c;
-    }
-    .route-fill {
-        position:absolute;
-        left:0;
-        top:0;
-        width:__SCENE_PROGRESS__%;
-        height:7px;
-        border-radius:12px;
-        background:linear-gradient(90deg,#30a9ff,#a66bff 55%,#ff70b8);
-        animation:routeGlow 2.4s ease-in-out infinite;
-    }
-    .route-dots {
-        position:absolute;
-        left:0;
-        right:0;
-        top:-4px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-    }
-    .route-dots span {
-        width:13px;
-        height:13px;
-        border-radius:50%;
-        background:#6e8495;
-        border:2px solid #b5c6d2;
-    }
-    .vehicle {
-        position:absolute;
-        left:calc(__SCENE_PROGRESS__% - 25px);
-        top:-39px;
-        font-size:2.75rem;
-        animation:vehicleFloat 1.7s ease-in-out infinite;
-        text-shadow:0 0 18px rgba(255,255,255,.55);
-        z-index:4;
-    }
-    .route-caption {
-        position:absolute;
-        left:50%;
-        top:22px;
-        transform:translateX(-50%);
-        color:#8fa6b6;
-        font-size:.72rem;
-        letter-spacing:.08em;
-        white-space:nowrap;
-    }
-    .mission-meta {
-        position:relative; z-index:2; margin-top:18px;
-        display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
-    }
-    .mission-meta > div {
-        background:rgba(5,13,20,.66); border:1px solid #294252;
-        border-radius:14px; padding:12px 14px; text-align:center;
-    }
-    .meta-label { color:#8298a8; font-size:.68rem; letter-spacing:.1em; }
-    .meta-value { font-weight:800; margin-top:3px; }
-    @media(max-width:560px) {
-        .mission-row {
-            grid-template-columns:1fr 1fr;
-            min-height:315px;
-        }
-        .avatar-card.left { grid-column:1; }
-        .avatar-card.right { grid-column:2; }
-        .avatar-img { width:115px; height:115px; }
-        .route-track {
-            left:65px;
-            right:65px;
-            top:58px;
-        }
-        .mission-meta { grid-template-columns:1fr 1fr; }
-    }
+    .avatar-card{text-align:center;z-index:5}
+    .avatar-img{width:150px;height:150px;object-fit:cover;animation:pulse 3.2s ease-in-out infinite}
+    .avatar-name{font-size:23px;font-weight:900;margin-top:5px}
+    .left .avatar-name{color:#56b7ff}.right .avatar-name{color:#ff82bf}
+    .place{font-size:12px;color:#c4d0da;margin-top:4px}
+    .route-track{position:absolute;left:95px;right:95px;top:104px;height:80px;z-index:4}
+    .route-base{position:absolute;left:0;right:0;top:0;height:7px;border-radius:12px;background:#30495c}
+    .route-fill{position:absolute;left:0;top:0;width:__SCENE_PROGRESS__%;height:7px;border-radius:12px;
+      background:linear-gradient(90deg,#30a9ff,#a66bff 55%,#ff70b8)}
+    .dots{position:absolute;left:0;right:0;top:-4px;display:flex;justify-content:space-between}
+    .dots span{width:13px;height:13px;border-radius:50%;background:#6e8495;border:2px solid #b5c6d2}
+    .vehicle{position:absolute;left:calc(__SCENE_PROGRESS__% - 25px);top:-42px;font-size:44px;
+      animation:float 1.7s ease-in-out infinite;text-shadow:0 0 18px rgba(255,255,255,.55)}
+    .meta{position:relative;z-index:4;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:5px}
+    .meta>div{background:rgba(5,13,20,.78);border:1px solid #294252;border-radius:14px;padding:12px;text-align:center}
+    .label{color:#8298a8;font-size:11px;letter-spacing:.1em}.value{font-weight:800;margin-top:4px}
     </style>
 
-    <section class="mission-shell">
-      <div class="mission-grid"></div>
-      <div class="mission-head">
-        <div class="mission-kicker">__MAP_LABEL__ • __MAP_TITLE__</div>
-        <div class="mission-title">MISIUNEA: APROPIERE EMOȚIONALĂ</div>
-        <div class="mission-distance">__DISTANCE__ km</div>
-        <div class="mission-distance-label">DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</div>
+    <section class="shell">
+      <div class="map-bg"></div>
+      <div class="head">
+        <div class="kicker">__MAP_TITLE__ • __PROTOCOL__</div>
+        <div class="title">MISIUNEA: APROPIERE EMOȚIONALĂ</div>
+        <div class="distance">__DISTANCE__ km</div>
+        <div class="distance-label">DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</div>
       </div>
 
       <div class="mission-row">
         <div class="avatar-card left">
-          <img class="avatar-img" src="data:image/png;base64,__RAZVAN__">
+          <img class="avatar-img" src="__RAZVAN__">
           <div class="avatar-name">RĂZVAN</div>
-          <div class="avatar-place">__LEFT_PLACE__</div>
+          <div class="place">__LEFT_PLACE__</div>
         </div>
 
         <div class="route-track">
           <div class="route-base"></div>
           <div class="route-fill"></div>
-          <div class="route-dots">
+          <div class="dots">
             <span></span><span></span><span></span><span></span><span></span>
             <span></span><span></span><span></span><span></span>
           </div>
           <div class="vehicle">__VEHICLE__</div>
-          <div class="route-caption">TRASEU ACTIV</div>
         </div>
 
         <div></div>
 
         <div class="avatar-card right">
-          <img class="avatar-img" src="data:image/png;base64,__ALEXANDRA__">
+          <img class="avatar-img" src="__ALEXANDRA__">
           <div class="avatar-name">ALEXANDRA</div>
-          <div class="avatar-place">__RIGHT_PLACE__</div>
+          <div class="place">__RIGHT_PLACE__</div>
         </div>
       </div>
 
-      <div class="mission-meta">
-        <div><div class="meta-label">FAZA</div><div class="meta-value">__PHASE__</div></div>
-        <div><div class="meta-label">VEHICUL</div><div class="meta-value">__VEHICLE_NAME__</div></div>
-        <div><div class="meta-label">URMĂTORUL PUNCT</div><div class="meta-value">__NEXT_TARGET__</div></div>
-        <div><div class="meta-label">PROGRES TOTAL</div><div class="meta-value">__TOTAL_PROGRESS__%</div></div>
+      <div class="meta">
+        <div><div class="label">FAZA</div><div class="value">__PHASE__</div></div>
+        <div><div class="label">VEHICUL</div><div class="value">__VEHICLE_NAME__</div></div>
+        <div><div class="label">URMĂTORUL PUNCT</div><div class="value">__NEXT_TARGET__</div></div>
+        <div><div class="label">PROGRES TOTAL</div><div class="value">__TOTAL_PROGRESS__%</div></div>
       </div>
     </section>
     """
 
     replacements = {
-        "__SCENE_PROGRESS__": f"{scene_progress:.1f}",
-        "__MAP_LABEL__": map_label,
+        "__MAP_URI__": map_uri,
         "__MAP_TITLE__": map_title,
+        "__PROTOCOL__": protocol,
         "__DISTANCE__": str(state.distance_km),
+        "__SCENE_PROGRESS__": f"{scene_progress:.1f}",
         "__RAZVAN__": razvan,
         "__ALEXANDRA__": alexandra,
         "__LEFT_PLACE__": left_place,
         "__RIGHT_PLACE__": right_place,
         "__VEHICLE__": vehicle,
+        "__VEHICLE_NAME__": vehicle_name,
         "__PHASE__": state.phase,
-        "__VEHICLE_NAME__": "Avion" if is_europe else "Mașină",
         "__NEXT_TARGET__": state.next_target,
         "__TOTAL_PROGRESS__": str(state.progress_percent),
     }
     for key, value in replacements.items():
         html = html.replace(key, value)
 
-    components.html(
-        textwrap.dedent(html).strip(),
-        height=710,
-        scrolling=False,
-    )
+    components.html(html, height=735, scrolling=False)
