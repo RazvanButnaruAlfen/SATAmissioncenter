@@ -1,3 +1,3 @@
 import streamlit as st
-st.title('Raport oficial')
+st.title('Raport declasificat')
 st.info('În dezvoltare.')

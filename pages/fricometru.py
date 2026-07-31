@@ -1,3 +1,3 @@
 import streamlit as st
-st.title('Raport oficial')
+st.title('Fricometru')
 st.info('În dezvoltare.')
