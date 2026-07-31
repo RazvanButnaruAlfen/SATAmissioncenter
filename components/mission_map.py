@@ -43,7 +43,7 @@ def render_mission_map(state: MissionState) -> None:
     }
     .mission-shell {
         position:relative; overflow:hidden; border-radius:24px;
-        padding:28px 32px 30px; color:white;
+        padding:22px 32px 24px; color:white;
         background:
           radial-gradient(circle at 25% 35%, rgba(31,117,180,.18), transparent 35%),
           radial-gradient(circle at 77% 38%, rgba(214,62,137,.18), transparent 35%),
@@ -67,7 +67,7 @@ def render_mission_map(state: MissionState) -> None:
     .mission-row {
         position:relative; z-index:2; display:grid;
         grid-template-columns:190px 1fr 190px;
-        align-items:center; gap:18px; margin-top:20px;
+        align-items:center; gap:18px; margin-top:14px;
     }
     .avatar-card { text-align:center; }
     .avatar-img {
@@ -83,7 +83,7 @@ def render_mission_map(state: MissionState) -> None:
     .avatar-card.left .avatar-name { color:#56b7ff; }
     .avatar-card.right .avatar-name { color:#ff82bf; }
     .avatar-place { font-size:.75rem; color:#c4d0da; margin-top:3px; }
-    .route-zone { position:relative; height:150px; display:flex; align-items:center; }
+    .route-zone { position:relative; height:120px; display:flex; align-items:center; }
     .route-base {
         position:absolute; left:0; right:0; height:7px;
         border-radius:12px; background:#30495c;
@@ -188,6 +188,6 @@ def render_mission_map(state: MissionState) -> None:
 
     components.html(
         textwrap.dedent(html).strip(),
-        height=720,
+        height=980,
         scrolling=False,
     )
