@@ -203,22 +203,31 @@ def render_mission_map(state: MissionState) -> None:
 
     fig.update_layout(
         height=620,
-        margin=dict(l=0, r=0, t=105, b=20),
+        margin=dict(l=0, r=0, t=155, b=20),
         paper_bgcolor="#08131e",
         plot_bgcolor="#08131e",
-        title=dict(
-            text=(
-                f"<span style='font-size:14px;color:#63bdf4'>{stage['title']}</span><br>"
-                f"<span style='font-size:28px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span><br>"
-                f"<span style='font-size:46px;color:#f49ac2'><b>{state.distance_km} km</b></span><br>"
-                f"<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>"
-            ),
-            x=0.5,
-            xanchor="center",
-            y=0.98,
-            yanchor="top",
-        ),
+        title=None,
         annotations=[
+            dict(
+                x=0.5, y=1.16, xref="paper", yref="paper",
+                text=f"<span style='font-size:14px;color:#63bdf4'><b>{stage['title']}</b></span>",
+                showarrow=False, xanchor="center", yanchor="top",
+            ),
+            dict(
+                x=0.5, y=1.10, xref="paper", yref="paper",
+                text="<span style='font-size:28px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span>",
+                showarrow=False, xanchor="center", yanchor="top",
+            ),
+            dict(
+                x=0.5, y=1.01, xref="paper", yref="paper",
+                text=f"<span style='font-size:44px;color:#f49ac2'><b>{state.distance_km} km</b></span>",
+                showarrow=False, xanchor="center", yanchor="top",
+            ),
+            dict(
+                x=0.5, y=0.94, xref="paper", yref="paper",
+                text="<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>",
+                showarrow=False, xanchor="center", yanchor="top",
+            ),
             dict(
                 x=0.02, y=0.02, xref="paper", yref="paper",
                 text="<b>RĂZVAN</b><br><span style='font-size:12px'>Amersfoort, Olanda</span>",
