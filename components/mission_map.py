@@ -97,6 +97,57 @@ def render_mission_map(state: MissionState) -> None:
         end = LOCATIONS["brasov"]
         vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
 
+        local_distance_km = max(0, round(110 * (1 - stage["progress"])))
+
+        st.markdown(
+            f"""
+            <div style="
+                background:#08131e;
+                border:1px solid #294454;
+                border-radius:18px 18px 0 0;
+                padding:22px 24px 18px;
+                text-align:center;
+                margin-bottom:-2px;
+            ">
+                <div style="
+                    color:#f2b84b;
+                    font-size:.9rem;
+                    font-weight:800;
+                    letter-spacing:.10em;
+                ">
+                    PROTOCOL PRAHOVA–BRAȘOV
+                </div>
+                <div style="
+                    color:white;
+                    font-size:2rem;
+                    font-weight:900;
+                    line-height:1.2;
+                    margin-top:.35rem;
+                ">
+                    MISIUNEA: DEPLASARE ÎMPREUNĂ
+                </div>
+                <div style="
+                    color:#f2b84b;
+                    font-size:2.8rem;
+                    font-weight:900;
+                    line-height:1;
+                    margin-top:.65rem;
+                ">
+                    {local_distance_km} km
+                </div>
+                <div style="
+                    color:#9fb1bf;
+                    font-size:.82rem;
+                    letter-spacing:.08em;
+                    margin-top:.3rem;
+                ">
+                    DISTANȚĂ RUTIERĂ ESTIMATĂ
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         fig = go.Figure()
 
         # Full route in one unified color.
@@ -156,38 +207,18 @@ def render_mission_map(state: MissionState) -> None:
         )
 
         fig.update_layout(
-            height=650,
-            margin=dict(l=0, r=0, t=155, b=20),
+            height=540,
+            margin=dict(l=0, r=0, t=0, b=0),
             paper_bgcolor="#08131e",
             plot_bgcolor="#08131e",
             mapbox=dict(
                 style="open-street-map",
                 center=dict(lat=45.28, lon=25.80),
-                zoom=7.7,
+                zoom=7.15,
             ),
             annotations=[
                 dict(
-                    x=0.5, y=1.10, xref="paper", yref="paper",
-                    text="<span style='font-size:14px;color:#f2b84b'><b>PROTOCOL PRAHOVA–BRAȘOV</b></span>",
-                    showarrow=False, xanchor="center", yanchor="top",
-                ),
-                dict(
-                    x=0.5, y=1.04, xref="paper", yref="paper",
-                    text="<span style='font-size:27px;color:white'><b>MISIUNEA: DEPLASARE ÎMPREUNĂ</b></span>",
-                    showarrow=False, xanchor="center", yanchor="top",
-                ),
-                dict(
-                    x=0.5, y=0.96, xref="paper", yref="paper",
-                    text=f"<span style='font-size:42px;color:#f2b84b'><b>{state.distance_km} km</b></span>",
-                    showarrow=False, xanchor="center", yanchor="top",
-                ),
-                dict(
-                    x=0.5, y=0.90, xref="paper", yref="paper",
-                    text="<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ RUTIERĂ ESTIMATĂ</span>",
-                    showarrow=False, xanchor="center", yanchor="top",
-                ),
-                dict(
-                    x=0.02, y=0.02, xref="paper", yref="paper",
+                    x=0.02, y=0.03, xref="paper", yref="paper",
                     text="<b>ECHIPAJ</b><br><span style='font-size:12px'>Răzvan + Alexandra</span><br><span style='font-size:11px'>Plecare împreună din Ploiești</span>",
                     showarrow=False, align="left",
                     font=dict(size=18, color="#ffd98d"),
