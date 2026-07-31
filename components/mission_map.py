@@ -2,6 +2,7 @@ import base64
 import textwrap
 from pathlib import Path
 import streamlit as st
+import streamlit.components.v1 as components
 from core.mission_state import MissionState
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -185,4 +186,8 @@ def render_mission_map(state: MissionState) -> None:
     for key, value in replacements.items():
         html = html.replace(key, value)
 
-    st.markdown(textwrap.dedent(html).strip(), unsafe_allow_html=True)
+    components.html(
+        textwrap.dedent(html).strip(),
+        height=720,
+        scrolling=False,
+    )
