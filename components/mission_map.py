@@ -89,6 +89,267 @@ def _stage(state: MissionState):
 def render_mission_map(state: MissionState) -> None:
     stage = _stage(state)
 
+    # Detailed Romania stage: Cluj-Napoca -> Ploiești.
+    if stage["title"] == "PROTOCOL ROMÂNIA":
+        start = LOCATIONS["cluj"]
+        end = LOCATIONS["ploiesti"]
+        progress = stage["progress"]
+
+        # Approximate road corridor via central Transylvania and Brașov.
+        route_points = [
+            (46.7712, 23.6236),  # Cluj-Napoca
+            (46.5667, 23.7833),  # Turda
+            (46.5425, 24.5575),  # Târgu Mureș
+            (46.2197, 24.7927),  # Sighișoara
+            (45.6427, 25.5887),  # Brașov
+            (44.9367, 26.0129),  # Ploiești
+        ]
+
+        # Interpolate vehicle position along the approximate route.
+        segment_count = len(route_points) - 1
+        scaled = max(0.0, min(1.0, progress)) * segment_count
+        segment_index = min(segment_count - 1, int(scaled))
+        local_progress = scaled - segment_index
+        vehicle_lat, vehicle_lon = _interpolate(
+            route_points[segment_index],
+            route_points[segment_index + 1],
+            local_progress,
+        )
+
+        remaining_km = max(0, round(423 * (1 - progress)))
+
+        st.markdown(
+            f"""
+            <div style="
+                background:#08131e;
+                border:1px solid #294454;
+                border-radius:18px 18px 0 0;
+                padding:22px 24px 18px;
+                text-align:center;
+                margin-bottom:-2px;
+            ">
+                <div style="
+                    color:#63bdf4;
+                    font-size:.9rem;
+                    font-weight:800;
+                    letter-spacing:.10em;
+                ">
+                    PROTOCOL ROMÂNIA
+                </div>
+                <div style="
+                    color:white;
+                    font-size:2rem;
+                    font-weight:900;
+                    line-height:1.2;
+                    margin-top:.35rem;
+                ">
+                    MISIUNEA: CLUJ-NAPOCA → PLOIEȘTI
+                </div>
+                <div style="
+                    color:#f49ac2;
+                    font-size:2.8rem;
+                    font-weight:900;
+                    line-height:1;
+                    margin-top:.65rem;
+                ">
+                    {remaining_km} km
+                </div>
+                <div style="
+                    color:#9fb1bf;
+                    font-size:.82rem;
+                    letter-spacing:.08em;
+                    margin-top:.3rem;
+                ">
+                    DISTANȚĂ RUTIERĂ ESTIMATĂ
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        fig = go.Figure()
+
+        # Full approximate road corridor.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[p[0] for p in route_points],
+                lon=[p[1] for p in route_points],
+                mode="lines",
+                line=dict(width=6, color="#334e63"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+        # Completed portion.
+        completed_points = route_points[:segment_index + 1] + [(vehicle_lat, vehicle_lon)]
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[p[0] for p in completed_points],
+                lon=[p[1] for p in completed_points],
+                mode="lines",
+                line=dict(width=6, color="#36aef5"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+        # Remaining portion.
+        remaining_points = [(vehicle_lat, vehicle_lon)] + route_points[segment_index + 1:]
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[p[0] for p in remaining_points],
+                lon=[p[1] for p in remaining_points],
+                mode="lines",
+                line=dict(width=5, color="#ff70b8"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+        # Origin and destination.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0], end[0]],
+                lon=[start[1], end[1]],
+                mode="markers+text",
+                text=["Cluj-Napoca", "Ploiești"],
+                textposition=["top left", "bottom right"],
+                textfont=dict(size=15, color="#ffffff"),
+                marker=dict(size=18, color=["#36aef5", "#ff70b8"]),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        # Vehicle.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[vehicle_lat],
+                lon=[vehicle_lon],
+                mode="text",
+                text=["🚗"],
+                textfont=dict(size=36, color="#ffffff"),
+                hovertemplate="Răzvan în drum spre Ploiești<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        fig.update_layout(
+            height=560,
+            margin=dict(l=0, r=0, t=0, b=0),
+            paper_bgcolor="#08131e",
+            plot_bgcolor="#08131e",
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=45.85, lon=24.80),
+                zoom=6.25,
+            ),
+            annotations=[
+                dict(
+                    x=0.02, y=0.03, xref="paper", yref="paper",
+                    text="<b>RĂZVAN</b><br><span style='font-size:12px'>În drum spre Ploiești</span>",
+                    showarrow=False, align="left",
+                    font=dict(size=18, color="#59b9ff"),
+                    bgcolor="rgba(4,15,24,.86)",
+                    bordercolor="#2d536b", borderwidth=1, borderpad=8,
+                ),
+                dict(
+                    x=0.98, y=0.03, xref="paper", yref="paper",
+                    text="<b>ALEXANDRA</b><br><span style='font-size:12px'>Așteaptă în Ploiești</span>",
+                    showarrow=False, align="right", xanchor="right",
+                    font=dict(size=18, color="#ff82bf"),
+                    bgcolor="rgba(4,15,24,.86)",
+                    bordercolor="#67405a", borderwidth=1, borderpad=8,
+                ),
+            ],
+            images=[
+                dict(
+                    source=_image_data(AVATAR_DIR / "razvan_avatar.png"),
+                    xref="paper", yref="paper",
+                    x=0.015, y=0.24,
+                    sizex=0.11, sizey=0.11,
+                    xanchor="left", yanchor="bottom",
+                    sizing="contain", opacity=1, layer="above",
+                ),
+                dict(
+                    source=_image_data(AVATAR_DIR / "alexandra_avatar.png"),
+                    xref="paper", yref="paper",
+                    x=0.985, y=0.24,
+                    sizex=0.11, sizey=0.11,
+                    xanchor="right", yanchor="bottom",
+                    sizing="contain", opacity=1, layer="above",
+                ),
+            ],
+            font=dict(family="Arial, sans-serif"),
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+            config={
+                "displayModeBar": False,
+                "responsive": True,
+                "scrollZoom": True,
+            },
+        )
+
+        st.markdown(
+            """
+            <style>
+            .sata-romania-cards {
+                display:grid;
+                grid-template-columns:repeat(4,minmax(0,1fr));
+                gap:12px;
+                margin-top:8px;
+                margin-bottom:8px;
+            }
+            .sata-romania-card {
+                background:#0b1722;
+                border:1px solid #294454;
+                border-radius:14px;
+                padding:14px 16px;
+                min-height:88px;
+            }
+            .sata-romania-label {
+                color:#8195a4;
+                font-size:.78rem;
+                margin-bottom:7px;
+            }
+            .sata-romania-value {
+                color:#f4f7fa;
+                font-size:1.25rem;
+                line-height:1.2;
+                font-weight:800;
+                white-space:normal;
+            }
+            @media(max-width:760px) {
+                .sata-romania-cards {grid-template-columns:1fr 1fr;}
+            }
+            </style>
+            <div class="sata-romania-cards">
+              <div class="sata-romania-card">
+                <div class="sata-romania-label">Faza</div>
+                <div class="sata-romania-value">Cluj-Napoca → Ploiești</div>
+              </div>
+              <div class="sata-romania-card">
+                <div class="sata-romania-label">Subiect</div>
+                <div class="sata-romania-value">Răzvan</div>
+              </div>
+              <div class="sata-romania-card">
+                <div class="sata-romania-label">Transport</div>
+                <div class="sata-romania-value">Mașină</div>
+              </div>
+              <div class="sata-romania-card">
+                <div class="sata-romania-label">Destinație</div>
+                <div class="sata-romania-value">Ploiești</div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
     # Local detailed route: Ploiești -> Brașov.
     # Here both travel together, so the visual language is unified:
     # one route color, one shared origin and one shared "ECHIPAJ" block.
