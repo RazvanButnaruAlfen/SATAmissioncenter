@@ -36,14 +36,61 @@ def get_mission_state() -> MissionState:
             days_remaining=max(0, (ROMANIA_ARRIVAL - current_date).days),
         )
 
-    if current_date < PLOIESTI_ARRIVAL:
-        total = max(1, (PLOIESTI_ARRIVAL - ROMANIA_ARRIVAL).days)
-        elapsed = max(0, (current_date - ROMANIA_ARRIVAL).days)
-        progress = 45 + round(elapsed / total * 40)
-        return MissionState(current_date, "România", "romania", "car",
-                            "România", "Ploiești",
-                            max(0, 423 - round(elapsed / total * 423)),
-                            min(85, progress), max(0, (PLOIESTI_ARRIVAL-current_date).days))
+    # 9–11 august: staționare în Cluj-Napoca.
+    if date(2026, 8, 9) <= current_date <= date(2026, 8, 11):
+        return MissionState(
+            current_date=current_date,
+            phase="Staționare Cluj-Napoca",
+            map_name="romania",
+            vehicle="stationary",
+            location="Cluj-Napoca",
+            next_target="Târgu Mureș",
+            distance_km=105,
+            progress_percent=45,
+            days_remaining=max(0, (date(2026, 8, 12) - current_date).days),
+        )
+
+    # 12 august: deplasare Cluj-Napoca -> Târgu Mureș.
+    if current_date == date(2026, 8, 12):
+        return MissionState(
+            current_date=current_date,
+            phase="Cluj-Napoca → Târgu Mureș",
+            map_name="romania",
+            vehicle="car",
+            location="În tranzit",
+            next_target="Târgu Mureș",
+            distance_km=53,
+            progress_percent=58,
+            days_remaining=0,
+        )
+
+    # 13 august: staționare în Târgu Mureș.
+    if current_date == date(2026, 8, 13):
+        return MissionState(
+            current_date=current_date,
+            phase="Staționare Târgu Mureș",
+            map_name="romania",
+            vehicle="stationary",
+            location="Târgu Mureș",
+            next_target="Ploiești",
+            distance_km=330,
+            progress_percent=72,
+            days_remaining=1,
+        )
+
+    # 14 august: deplasare Târgu Mureș -> Ploiești și sosire.
+    if current_date == PLOIESTI_ARRIVAL:
+        return MissionState(
+            current_date=current_date,
+            phase="Târgu Mureș → Ploiești",
+            map_name="romania",
+            vehicle="car",
+            location="În tranzit spre Ploiești",
+            next_target="Ploiești",
+            distance_km=0,
+            progress_percent=88,
+            days_remaining=0,
+        )
 
     if current_date < BRASOV_START:
         return MissionState(current_date, "Ploiești", "romania", "car",
