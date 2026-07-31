@@ -65,11 +65,21 @@ def render_mission_map(state: MissionState) -> None:
     .mission-distance { font-size:3rem; font-weight:900; color:#f49ac2; line-height:1.05; margin-top:10px; }
     .mission-distance-label { color:#a7b9c7; font-size:.84rem; letter-spacing:.08em; }
     .mission-row {
-        position:relative; z-index:2; display:grid;
-        grid-template-columns:190px 1fr 190px;
-        align-items:center; gap:18px; margin-top:14px;
+        position:relative; z-index:2;
+        display:grid;
+        grid-template-columns:190px minmax(220px,1fr) 190px;
+        align-items:start;
+        gap:0;
+        margin-top:18px;
+        min-height:245px;
     }
-    .avatar-card { text-align:center; }
+    .avatar-card {
+        position:relative;
+        z-index:3;
+        text-align:center;
+    }
+    .avatar-card.left { grid-column:1; }
+    .avatar-card.right { grid-column:3; }
     .avatar-img {
         width:155px; height:155px; object-fit:cover;
         animation:sataPulse 3.2s ease-in-out infinite;
@@ -83,30 +93,68 @@ def render_mission_map(state: MissionState) -> None:
     .avatar-card.left .avatar-name { color:#56b7ff; }
     .avatar-card.right .avatar-name { color:#ff82bf; }
     .avatar-place { font-size:.75rem; color:#c4d0da; margin-top:3px; }
-    .route-zone { position:relative; height:120px; display:flex; align-items:center; }
+
+    .route-track {
+        position:absolute;
+        z-index:1;
+        left:95px;
+        right:95px;
+        top:76px;
+        height:70px;
+    }
     .route-base {
-        position:absolute; left:0; right:0; height:7px;
-        border-radius:12px; background:#30495c;
+        position:absolute;
+        left:0;
+        right:0;
+        top:0;
+        height:7px;
+        border-radius:12px;
+        background:#30495c;
     }
     .route-fill {
-        position:absolute; left:0; width:__SCENE_PROGRESS__%; height:7px;
+        position:absolute;
+        left:0;
+        top:0;
+        width:__SCENE_PROGRESS__%;
+        height:7px;
         border-radius:12px;
         background:linear-gradient(90deg,#30a9ff,#a66bff 55%,#ff70b8);
         animation:routeGlow 2.4s ease-in-out infinite;
     }
     .route-dots {
-        position:absolute; left:0; right:0; display:flex;
-        justify-content:space-between; align-items:center;
+        position:absolute;
+        left:0;
+        right:0;
+        top:-4px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
     }
     .route-dots span {
-        width:13px; height:13px; border-radius:50%;
-        background:#6e8495; border:2px solid #b5c6d2;
+        width:13px;
+        height:13px;
+        border-radius:50%;
+        background:#6e8495;
+        border:2px solid #b5c6d2;
     }
     .vehicle {
-        position:absolute; left:calc(__SCENE_PROGRESS__% - 25px);
-        top:35px; font-size:2.75rem;
+        position:absolute;
+        left:calc(__SCENE_PROGRESS__% - 25px);
+        top:-39px;
+        font-size:2.75rem;
         animation:vehicleFloat 1.7s ease-in-out infinite;
         text-shadow:0 0 18px rgba(255,255,255,.55);
+        z-index:4;
+    }
+    .route-caption {
+        position:absolute;
+        left:50%;
+        top:22px;
+        transform:translateX(-50%);
+        color:#8fa6b6;
+        font-size:.72rem;
+        letter-spacing:.08em;
+        white-space:nowrap;
     }
     .mission-meta {
         position:relative; z-index:2; margin-top:18px;
@@ -118,10 +166,19 @@ def render_mission_map(state: MissionState) -> None:
     }
     .meta-label { color:#8298a8; font-size:.68rem; letter-spacing:.1em; }
     .meta-value { font-weight:800; margin-top:3px; }
-    @media(max-width:850px) {
-        .mission-row { grid-template-columns:1fr; }
-        .route-zone { order:3; height:110px; }
-        .avatar-img { width:125px; height:125px; }
+    @media(max-width:560px) {
+        .mission-row {
+            grid-template-columns:1fr 1fr;
+            min-height:315px;
+        }
+        .avatar-card.left { grid-column:1; }
+        .avatar-card.right { grid-column:2; }
+        .avatar-img { width:115px; height:115px; }
+        .route-track {
+            left:65px;
+            right:65px;
+            top:58px;
+        }
         .mission-meta { grid-template-columns:1fr 1fr; }
     }
     </style>
@@ -142,7 +199,7 @@ def render_mission_map(state: MissionState) -> None:
           <div class="avatar-place">__LEFT_PLACE__</div>
         </div>
 
-        <div class="route-zone">
+        <div class="route-track">
           <div class="route-base"></div>
           <div class="route-fill"></div>
           <div class="route-dots">
@@ -150,7 +207,10 @@ def render_mission_map(state: MissionState) -> None:
             <span></span><span></span><span></span><span></span>
           </div>
           <div class="vehicle">__VEHICLE__</div>
+          <div class="route-caption">TRASEU ACTIV</div>
         </div>
+
+        <div></div>
 
         <div class="avatar-card right">
           <img class="avatar-img" src="data:image/png;base64,__ALEXANDRA__">
@@ -188,6 +248,6 @@ def render_mission_map(state: MissionState) -> None:
 
     components.html(
         textwrap.dedent(html).strip(),
-        height=980,
+        height=710,
         scrolling=False,
     )
