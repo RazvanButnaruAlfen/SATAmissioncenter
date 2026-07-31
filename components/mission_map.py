@@ -112,18 +112,31 @@ def render_mission_map(state: MissionState) -> None:
         )
 
         # Origin and destination use the same color scheme.
+        # Ploiești marker and label.
         fig.add_trace(
             go.Scattermapbox(
-                lat=[start[0], end[0]],
-                lon=[start[1], end[1]],
+                lat=[start[0]],
+                lon=[start[1]],
                 mode="markers+text",
-                text=["Ploiești — plecare împreună", "Brașov — destinație"],
-                textposition=["bottom right", "top right"],
+                text=["Ploiești — plecare împreună"],
+                textposition="bottom right",
                 textfont=dict(size=15, color="#ffd98d"),
-                marker=dict(
-                    size=[18, 18],
-                    color=["#f2b84b", "#f2b84b"],
-                ),
+                marker=dict(size=18, color="#f2b84b"),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        # Brașov marker and label.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[end[0]],
+                lon=[end[1]],
+                mode="markers+text",
+                text=["Brașov — destinație"],
+                textposition="top right",
+                textfont=dict(size=15, color="#ffd98d"),
+                marker=dict(size=18, color="#f2b84b"),
                 hovertemplate="%{text}<extra></extra>",
                 showlegend=False,
             )
