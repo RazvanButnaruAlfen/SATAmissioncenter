@@ -1,0 +1,1 @@
+Fundaluri grafice opționale.
