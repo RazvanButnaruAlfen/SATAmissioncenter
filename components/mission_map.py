@@ -148,9 +148,9 @@ def render_mission_map(state: MissionState) -> None:
                 lat=[vehicle_lat],
                 lon=[vehicle_lon],
                 mode="text",
-                text=["🚗"],
+                text=["🚆 / 🚗"],
                 textfont=dict(size=36, color="#ffffff"),
-                hovertemplate="Răzvan + Alexandra<extra></extra>",
+                hovertemplate="Răzvan + Alexandra — transport de stabilit<extra></extra>",
                 showlegend=False,
             )
         )
@@ -188,7 +188,7 @@ def render_mission_map(state: MissionState) -> None:
                 ),
                 dict(
                     x=0.02, y=0.02, xref="paper", yref="paper",
-                    text="<b>ECHIPAJ</b><br><span style='font-size:12px'>Răzvan + Alexandra</span><br><span style='font-size:11px'>Plecare: Ploiești</span>",
+                    text="<b>ECHIPAJ</b><br><span style='font-size:12px'>Răzvan + Alexandra</span><br><span style='font-size:11px'>Plecare împreună din Ploiești</span>",
                     showarrow=False, align="left",
                     font=dict(size=18, color="#ffd98d"),
                     bgcolor="rgba(4,15,24,.86)",
@@ -226,11 +226,61 @@ def render_mission_map(state: MissionState) -> None:
             },
         )
 
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Faza", "Ploiești → Brașov")
-        c2.metric("Echipaj", "Răzvan + Alexandra")
-        c3.metric("Vehicul", "Mașină")
-        c4.metric("Destinație", "Brașov")
+        st.markdown(
+            """
+            <style>
+            .sata-local-cards {
+                display:grid;
+                grid-template-columns:repeat(4,minmax(0,1fr));
+                gap:12px;
+                margin-top:8px;
+                margin-bottom:8px;
+            }
+            .sata-local-card {
+                background:#0b1722;
+                border:1px solid #294454;
+                border-radius:14px;
+                padding:14px 16px;
+                min-height:88px;
+            }
+            .sata-local-label {
+                color:#8195a4;
+                font-size:.78rem;
+                margin-bottom:7px;
+            }
+            .sata-local-value {
+                color:#f4f7fa;
+                font-size:1.35rem;
+                line-height:1.2;
+                font-weight:800;
+                white-space:normal;
+                overflow-wrap:anywhere;
+            }
+            @media(max-width:760px) {
+                .sata-local-cards {grid-template-columns:1fr 1fr;}
+            }
+            </style>
+            <div class="sata-local-cards">
+              <div class="sata-local-card">
+                <div class="sata-local-label">Faza</div>
+                <div class="sata-local-value">Ploiești → Brașov</div>
+              </div>
+              <div class="sata-local-card">
+                <div class="sata-local-label">Echipaj</div>
+                <div class="sata-local-value">Răzvan + Alexandra</div>
+              </div>
+              <div class="sata-local-card">
+                <div class="sata-local-label">Transport</div>
+                <div class="sata-local-value">De stabilit</div>
+              </div>
+              <div class="sata-local-card">
+                <div class="sata-local-label">Destinație</div>
+                <div class="sata-local-value">Brașov</div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         return
 
     # Europe and Romania overview maps.
