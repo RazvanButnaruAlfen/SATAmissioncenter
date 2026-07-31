@@ -134,7 +134,7 @@ def render_mission_map(state: MissionState) -> None:
                     font-weight:800;
                     letter-spacing:.10em;
                 ">
-                    PROTOCOL ROMÂNIA
+                    PROTOCOL ROMÂNIA • BUILD 0.2.14
                 </div>
                 <div style="
                     color:white;
@@ -207,16 +207,31 @@ def render_mission_map(state: MissionState) -> None:
             )
         )
 
-        # Origin and destination.
+        # Cluj-Napoca marker and label.
         fig.add_trace(
             go.Scattermapbox(
-                lat=[start[0], end[0]],
-                lon=[start[1], end[1]],
+                lat=[start[0]],
+                lon=[start[1]],
                 mode="markers+text",
-                text=["Cluj-Napoca", "Ploiești"],
-                textposition=["top left", "bottom right"],
-                textfont=dict(size=15, color="#ffffff"),
-                marker=dict(size=18, color=["#36aef5", "#ff70b8"]),
+                text=["Cluj-Napoca"],
+                textposition="top left",
+                textfont=dict(size=15, color="#68c2ff"),
+                marker=dict(size=18, color="#36aef5"),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        # Ploiești marker and label.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[end[0]],
+                lon=[end[1]],
+                mode="markers+text",
+                text=["Ploiești"],
+                textposition="bottom right",
+                textfont=dict(size=15, color="#ff8bc5"),
+                marker=dict(size=18, color="#ff70b8"),
                 hovertemplate="%{text}<extra></extra>",
                 showlegend=False,
             )
