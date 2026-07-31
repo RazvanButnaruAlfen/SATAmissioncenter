@@ -1,4 +1,5 @@
 import base64
+import textwrap
 from pathlib import Path
 import streamlit as st
 from core.mission_state import MissionState
@@ -184,4 +185,4 @@ def render_mission_map(state: MissionState) -> None:
     for key, value in replacements.items():
         html = html.replace(key, value)
 
-    st.markdown(html, unsafe_allow_html=True)
+    st.markdown(textwrap.dedent(html).strip(), unsafe_allow_html=True)
