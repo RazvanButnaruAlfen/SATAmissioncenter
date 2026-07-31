@@ -36,7 +36,7 @@ def get_mission_state() -> MissionState:
         progress = 45 + round(elapsed / total * 40)
         return MissionState(current_date, "România", "romania", "car",
                             "România", "Ploiești",
-                            max(0, 120 - round(elapsed / total * 120)),
+                            max(0, 423 - round(elapsed / total * 423)),
                             min(85, progress), max(0, (PLOIESTI_ARRIVAL-current_date).days))
 
     if current_date < BRASOV_START:
