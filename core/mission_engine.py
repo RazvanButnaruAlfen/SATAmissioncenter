@@ -22,13 +22,19 @@ def get_mission_state() -> MissionState:
         )
 
     if current_date < ROMANIA_ARRIVAL:
-        total = max(1, (ROMANIA_ARRIVAL - START_DATE).days)
-        elapsed = max(0, (current_date - START_DATE).days)
-        progress = min(45, round(elapsed / total * 45))
-        return MissionState(current_date, "Europa", "europe", "plane",
-                            "Amersfoort", "România",
-                            interpolate_distance(START_DISTANCE_KM, progress),
-                            progress, max(0, (ROMANIA_ARRIVAL-current_date).days))
+        # Până pe 8 august nu există deplasare fizică.
+        # Se schimbă doar numărătoarea inversă; avionul și distanța rămân la origine.
+        return MissionState(
+            current_date=current_date,
+            phase="Așteptare plecare",
+            map_name="europe",
+            vehicle="plane",
+            location="Amersfoort",
+            next_target="Zbor spre România",
+            distance_km=START_DISTANCE_KM,
+            progress_percent=0,
+            days_remaining=max(0, (ROMANIA_ARRIVAL - current_date).days),
+        )
 
     if current_date < PLOIESTI_ARRIVAL:
         total = max(1, (PLOIESTI_ARRIVAL - ROMANIA_ARRIVAL).days)
