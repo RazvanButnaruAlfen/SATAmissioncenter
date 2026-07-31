@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+<rect width="1200" height="600" fill="transparent"/>
+<path d="M235,125 L360,80 L490,95 L610,65 L740,110 L860,105 L975,170 L1030,260 L1000,355 L900,410 L790,425 L690,475 L560,450 L450,480 L335,430 L250,355 L190,250 Z"
+ fill="#0d2233" stroke="#2d6c96" stroke-width="4"/>
+<g font-family="Arial, sans-serif" font-weight="700">
+  <circle cx="430" cy="215" r="11" fill="#39a9ff"/>
+  <circle cx="795" cy="375" r="11" fill="#ff70b8"/>
+  <text x="350" y="190" fill="#9ed8ff" font-size="30">Cluj-Napoca</text>
+  <text x="820" y="355" fill="#ffacd4" font-size="30">Ploiești</text>
+  <path d="M442,215 C545,250 680,315 784,375" fill="none" stroke="#79c8ff" stroke-width="5" stroke-dasharray="14 12"/>
+</g>
+</svg>
