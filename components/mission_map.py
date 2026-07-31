@@ -15,6 +15,7 @@ AVATAR_DIR = BASE_DIR / "assets" / "avatars"
 LOCATIONS = {
     "amersfoort": (52.1561, 5.3878),
     "cluj": (46.7712, 23.6236),
+    "targu_mures": (46.5425, 24.5575),
     "ploiesti": (44.9367, 26.0129),
     "brasov": (45.6427, 25.5887),
 }
@@ -52,21 +53,66 @@ def _stage(state: MissionState):
             "labels": [("Amersfoort", start), ("Ploiești", end)],
         }
 
-    if current.month == 8 and current.day < 14:
-        start = LOCATIONS["cluj"]
-        end = LOCATIONS["ploiesti"]
-        progress = max(0.0, min(1.0, (state.progress_percent - 45) / 40))
+    if current.month == 8 and 9 <= current.day <= 11:
+        point = LOCATIONS["cluj"]
         return {
-            "title": "PROTOCOL ROMÂNIA",
-            "subtitle": "Cluj-Napoca → Ploiești",
+            "title": "PROTOCOL CLUJ",
+            "subtitle": "Staționare în Cluj-Napoca",
+            "start": point,
+            "end": point,
+            "vehicle": "●",
+            "vehicle_name": "Staționare",
+            "progress": 0.0,
+            "lat_range": [45.8, 47.4],
+            "lon_range": [22.6, 24.7],
+            "labels": [("Cluj-Napoca", point)],
+        }
+
+    if current.month == 8 and current.day == 12:
+        start = LOCATIONS["cluj"]
+        end = LOCATIONS["targu_mures"]
+        return {
+            "title": "PROTOCOL CLUJ–TÂRGU MUREȘ",
+            "subtitle": "Cluj-Napoca → Târgu Mureș",
             "start": start,
             "end": end,
             "vehicle": "🚗",
             "vehicle_name": "Mașină",
-            "progress": progress,
-            "lat_range": [43.4, 48.5],
-            "lon_range": [19.5, 29.8],
-            "labels": [("Cluj-Napoca", start), ("Ploiești", end)],
+            "progress": 0.50,
+            "lat_range": [45.8, 47.3],
+            "lon_range": [22.7, 25.2],
+            "labels": [("Cluj-Napoca", start), ("Târgu Mureș", end)],
+        }
+
+    if current.month == 8 and current.day == 13:
+        point = LOCATIONS["targu_mures"]
+        return {
+            "title": "PROTOCOL TÂRGU MUREȘ",
+            "subtitle": "Staționare în Târgu Mureș",
+            "start": point,
+            "end": point,
+            "vehicle": "●",
+            "vehicle_name": "Staționare",
+            "progress": 0.0,
+            "lat_range": [45.7, 47.2],
+            "lon_range": [23.6, 25.6],
+            "labels": [("Târgu Mureș", point)],
+        }
+
+    if current.month == 8 and current.day == 14:
+        start = LOCATIONS["targu_mures"]
+        end = LOCATIONS["ploiesti"]
+        return {
+            "title": "PROTOCOL TÂRGU MUREȘ–PLOIEȘTI",
+            "subtitle": "Târgu Mureș → Ploiești",
+            "start": start,
+            "end": end,
+            "vehicle": "🚗",
+            "vehicle_name": "Mașină",
+            "progress": 1.0,
+            "lat_range": [44.3, 47.1],
+            "lon_range": [23.4, 26.8],
+            "labels": [("Târgu Mureș", start), ("Ploiești", end)],
         }
 
     start = LOCATIONS["ploiesti"]
@@ -89,34 +135,26 @@ def _stage(state: MissionState):
 def render_mission_map(state: MissionState) -> None:
     stage = _stage(state)
 
-    # Detailed Romania stage: Cluj-Napoca -> Ploiești.
-    if stage["title"] == "PROTOCOL ROMÂNIA":
-        start = LOCATIONS["cluj"]
-        end = LOCATIONS["ploiesti"]
-        progress = stage["progress"]
+    # Detailed itinerary in Romania: Cluj, Târgu Mureș, then Ploiești.
+    if state.current_date.month == 8 and 9 <= state.current_date.day <= 14:
+        start = stage["start"]
+        end = stage["end"]
+        is_stationary = start == end
+        vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
 
-        # Approximate road corridor via central Transylvania and Brașov.
-        route_points = [
-            (46.7712, 23.6236),  # Cluj-Napoca
-            (46.5667, 23.7833),  # Turda
-            (46.5425, 24.5575),  # Târgu Mureș
-            (46.2197, 24.7927),  # Sighișoara
-            (45.6427, 25.5887),  # Brașov
-            (44.9367, 26.0129),  # Ploiești
-        ]
-
-        # Interpolate vehicle position along the approximate route.
-        segment_count = len(route_points) - 1
-        scaled = max(0.0, min(1.0, progress)) * segment_count
-        segment_index = min(segment_count - 1, int(scaled))
-        local_progress = scaled - segment_index
-        vehicle_lat, vehicle_lon = _interpolate(
-            route_points[segment_index],
-            route_points[segment_index + 1],
-            local_progress,
-        )
-
-        remaining_km = max(0, round(423 * (1 - progress)))
+        # Distances are operational road estimates for the active or upcoming leg.
+        if state.current_date.day <= 11:
+            display_distance = 105
+            distance_caption = "DISTANȚĂ PÂNĂ LA URMĂTOAREA ETAPĂ"
+        elif state.current_date.day == 12:
+            display_distance = 53
+            distance_caption = "DISTANȚĂ RUTIERĂ RĂMASĂ ESTIMATĂ"
+        elif state.current_date.day == 13:
+            display_distance = 330
+            distance_caption = "DISTANȚĂ PÂNĂ LA PLOIEȘTI"
+        else:
+            display_distance = 0
+            distance_caption = "SOSIRE ÎN PLOIEȘTI"
 
         st.markdown(
             f"""
@@ -134,7 +172,7 @@ def render_mission_map(state: MissionState) -> None:
                     font-weight:800;
                     letter-spacing:.10em;
                 ">
-                    PROTOCOL ROMÂNIA • BUILD 0.2.14
+                    {stage["title"]} • BUILD 0.2.16
                 </div>
                 <div style="
                     color:white;
@@ -143,7 +181,7 @@ def render_mission_map(state: MissionState) -> None:
                     line-height:1.2;
                     margin-top:.35rem;
                 ">
-                    MISIUNEA: CLUJ-NAPOCA → PLOIEȘTI
+                    {stage["subtitle"].upper()}
                 </div>
                 <div style="
                     color:#f49ac2;
@@ -152,7 +190,7 @@ def render_mission_map(state: MissionState) -> None:
                     line-height:1;
                     margin-top:.65rem;
                 ">
-                    {remaining_km} km
+                    {display_distance} km
                 </div>
                 <div style="
                     color:#9fb1bf;
@@ -160,7 +198,7 @@ def render_mission_map(state: MissionState) -> None:
                     letter-spacing:.08em;
                     margin-top:.3rem;
                 ">
-                    DISTANȚĂ RUTIERĂ ESTIMATĂ
+                    {distance_caption}
                 </div>
             </div>
             """,
@@ -169,86 +207,106 @@ def render_mission_map(state: MissionState) -> None:
 
         fig = go.Figure()
 
-        # Full approximate road corridor.
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[p[0] for p in route_points],
-                lon=[p[1] for p in route_points],
-                mode="lines",
-                line=dict(width=6, color="#334e63"),
-                hoverinfo="skip",
-                showlegend=False,
+        if is_stationary:
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[start[0]],
+                    lon=[start[1]],
+                    mode="markers+text",
+                    text=[stage["labels"][0][0]],
+                    textposition="top right",
+                    textfont=dict(size=16, color="#68c2ff"),
+                    marker=dict(size=22, color="#36aef5"),
+                    hovertemplate="%{text}<extra></extra>",
+                    showlegend=False,
+                )
             )
-        )
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[start[0]],
+                    lon=[start[1]],
+                    mode="text",
+                    text=["📍"],
+                    textfont=dict(size=32, color="#ffffff"),
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
+        else:
+            # Simple route for the active travel day.
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[start[0], end[0]],
+                    lon=[start[1], end[1]],
+                    mode="lines",
+                    line=dict(width=7, color="#334e63"),
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[start[0], vehicle_lat],
+                    lon=[start[1], vehicle_lon],
+                    mode="lines",
+                    line=dict(width=6, color="#36aef5"),
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[vehicle_lat, end[0]],
+                    lon=[vehicle_lon, end[1]],
+                    mode="lines",
+                    line=dict(width=5, color="#ff70b8"),
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
 
-        # Completed portion.
-        completed_points = route_points[:segment_index + 1] + [(vehicle_lat, vehicle_lon)]
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[p[0] for p in completed_points],
-                lon=[p[1] for p in completed_points],
-                mode="lines",
-                line=dict(width=6, color="#36aef5"),
-                hoverinfo="skip",
-                showlegend=False,
+            # Separate marker traces avoid Plotly textposition errors.
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[start[0]],
+                    lon=[start[1]],
+                    mode="markers+text",
+                    text=[stage["labels"][0][0]],
+                    textposition="top left",
+                    textfont=dict(size=15, color="#68c2ff"),
+                    marker=dict(size=18, color="#36aef5"),
+                    hovertemplate="%{text}<extra></extra>",
+                    showlegend=False,
+                )
             )
-        )
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[end[0]],
+                    lon=[end[1]],
+                    mode="markers+text",
+                    text=[stage["labels"][-1][0]],
+                    textposition="bottom right",
+                    textfont=dict(size=15, color="#ff8bc5"),
+                    marker=dict(size=18, color="#ff70b8"),
+                    hovertemplate="%{text}<extra></extra>",
+                    showlegend=False,
+                )
+            )
+            fig.add_trace(
+                go.Scattermapbox(
+                    lat=[vehicle_lat],
+                    lon=[vehicle_lon],
+                    mode="text",
+                    text=[stage["vehicle"]],
+                    textfont=dict(size=36, color="#ffffff"),
+                    hovertemplate=f"{stage['vehicle_name']}<extra></extra>",
+                    showlegend=False,
+                )
+            )
 
-        # Remaining portion.
-        remaining_points = [(vehicle_lat, vehicle_lon)] + route_points[segment_index + 1:]
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[p[0] for p in remaining_points],
-                lon=[p[1] for p in remaining_points],
-                mode="lines",
-                line=dict(width=5, color="#ff70b8"),
-                hoverinfo="skip",
-                showlegend=False,
-            )
-        )
-
-        # Cluj-Napoca marker and label.
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[start[0]],
-                lon=[start[1]],
-                mode="markers+text",
-                text=["Cluj-Napoca"],
-                textposition="top left",
-                textfont=dict(size=15, color="#68c2ff"),
-                marker=dict(size=18, color="#36aef5"),
-                hovertemplate="%{text}<extra></extra>",
-                showlegend=False,
-            )
-        )
-
-        # Ploiești marker and label.
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[end[0]],
-                lon=[end[1]],
-                mode="markers+text",
-                text=["Ploiești"],
-                textposition="bottom right",
-                textfont=dict(size=15, color="#ff8bc5"),
-                marker=dict(size=18, color="#ff70b8"),
-                hovertemplate="%{text}<extra></extra>",
-                showlegend=False,
-            )
-        )
-
-        # Vehicle.
-        fig.add_trace(
-            go.Scattermapbox(
-                lat=[vehicle_lat],
-                lon=[vehicle_lon],
-                mode="text",
-                text=["🚗"],
-                textfont=dict(size=36, color="#ffffff"),
-                hovertemplate="Răzvan în drum spre Ploiești<extra></extra>",
-                showlegend=False,
-            )
-        )
+        center_lat = (stage["lat_range"][0] + stage["lat_range"][1]) / 2
+        center_lon = (stage["lon_range"][0] + stage["lon_range"][1]) / 2
+        zoom = 7.1 if is_stationary else (7.0 if state.current_date.day == 12 else 6.3)
 
         fig.update_layout(
             height=560,
@@ -257,13 +315,13 @@ def render_mission_map(state: MissionState) -> None:
             plot_bgcolor="#08131e",
             mapbox=dict(
                 style="open-street-map",
-                center=dict(lat=45.85, lon=24.80),
-                zoom=6.25,
+                center=dict(lat=center_lat, lon=center_lon),
+                zoom=zoom,
             ),
             annotations=[
                 dict(
                     x=0.02, y=0.03, xref="paper", yref="paper",
-                    text="<b>RĂZVAN</b><br><span style='font-size:12px'>În drum spre Ploiești</span>",
+                    text=f"<b>RĂZVAN</b><br><span style='font-size:12px'>{state.location}</span>",
                     showarrow=False, align="left",
                     font=dict(size=18, color="#59b9ff"),
                     bgcolor="rgba(4,15,24,.86)",
@@ -271,7 +329,7 @@ def render_mission_map(state: MissionState) -> None:
                 ),
                 dict(
                     x=0.98, y=0.03, xref="paper", yref="paper",
-                    text="<b>ALEXANDRA</b><br><span style='font-size:12px'>Așteaptă în Ploiești</span>",
+                    text="<b>ALEXANDRA</b><br><span style='font-size:12px'>În Ploiești</span>",
                     showarrow=False, align="right", xanchor="right",
                     font=dict(size=18, color="#ff82bf"),
                     bgcolor="rgba(4,15,24,.86)",
@@ -309,60 +367,11 @@ def render_mission_map(state: MissionState) -> None:
             },
         )
 
-        st.markdown(
-            """
-            <style>
-            .sata-romania-cards {
-                display:grid;
-                grid-template-columns:repeat(4,minmax(0,1fr));
-                gap:12px;
-                margin-top:8px;
-                margin-bottom:8px;
-            }
-            .sata-romania-card {
-                background:#0b1722;
-                border:1px solid #294454;
-                border-radius:14px;
-                padding:14px 16px;
-                min-height:88px;
-            }
-            .sata-romania-label {
-                color:#8195a4;
-                font-size:.78rem;
-                margin-bottom:7px;
-            }
-            .sata-romania-value {
-                color:#f4f7fa;
-                font-size:1.25rem;
-                line-height:1.2;
-                font-weight:800;
-                white-space:normal;
-            }
-            @media(max-width:760px) {
-                .sata-romania-cards {grid-template-columns:1fr 1fr;}
-            }
-            </style>
-            <div class="sata-romania-cards">
-              <div class="sata-romania-card">
-                <div class="sata-romania-label">Faza</div>
-                <div class="sata-romania-value">Cluj-Napoca → Ploiești</div>
-              </div>
-              <div class="sata-romania-card">
-                <div class="sata-romania-label">Subiect</div>
-                <div class="sata-romania-value">Răzvan</div>
-              </div>
-              <div class="sata-romania-card">
-                <div class="sata-romania-label">Transport</div>
-                <div class="sata-romania-value">Mașină</div>
-              </div>
-              <div class="sata-romania-card">
-                <div class="sata-romania-label">Destinație</div>
-                <div class="sata-romania-value">Ploiești</div>
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Faza", state.phase)
+        c2.metric("Localizare", state.location)
+        c3.metric("Următorul punct", state.next_target)
+        c4.metric("Zile rămase", state.days_remaining)
         return
 
     # Local detailed route: Ploiești -> Brașov.
