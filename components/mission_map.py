@@ -88,13 +88,145 @@ def _stage(state: MissionState):
 
 def render_mission_map(state: MissionState) -> None:
     stage = _stage(state)
+
+    # Local detailed route: Ploiești -> Brașov.
+    # Here both travel together, so the visual language is unified:
+    # one route color, one shared origin and one shared "ECHIPAJ" block.
+    if stage["title"] == "PROTOCOL PRAHOVA–BRAȘOV":
+        start = LOCATIONS["ploiesti"]
+        end = LOCATIONS["brasov"]
+        vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
+
+        fig = go.Figure()
+
+        # Full route in one unified color.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0], end[0]],
+                lon=[start[1], end[1]],
+                mode="lines",
+                line=dict(width=7, color="#f2b84b"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+        # Origin and destination use the same color scheme.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0], end[0]],
+                lon=[start[1], end[1]],
+                mode="markers+text",
+                text=["Ploiești — plecare împreună", "Brașov — destinație"],
+                textposition=["bottom right", "top right"],
+                textfont=dict(size=15, color="#ffd98d"),
+                marker=dict(
+                    size=[18, 18],
+                    color=["#f2b84b", "#f2b84b"],
+                ),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        # Shared vehicle.
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[vehicle_lat],
+                lon=[vehicle_lon],
+                mode="text",
+                text=["🚗"],
+                textfont=dict(size=36, color="#ffffff"),
+                hovertemplate="Răzvan + Alexandra<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        fig.update_layout(
+            height=650,
+            margin=dict(l=0, r=0, t=155, b=20),
+            paper_bgcolor="#08131e",
+            plot_bgcolor="#08131e",
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=45.28, lon=25.80),
+                zoom=7.7,
+            ),
+            annotations=[
+                dict(
+                    x=0.5, y=1.10, xref="paper", yref="paper",
+                    text="<span style='font-size:14px;color:#f2b84b'><b>PROTOCOL PRAHOVA–BRAȘOV</b></span>",
+                    showarrow=False, xanchor="center", yanchor="top",
+                ),
+                dict(
+                    x=0.5, y=1.04, xref="paper", yref="paper",
+                    text="<span style='font-size:27px;color:white'><b>MISIUNEA: DEPLASARE ÎMPREUNĂ</b></span>",
+                    showarrow=False, xanchor="center", yanchor="top",
+                ),
+                dict(
+                    x=0.5, y=0.96, xref="paper", yref="paper",
+                    text=f"<span style='font-size:42px;color:#f2b84b'><b>{state.distance_km} km</b></span>",
+                    showarrow=False, xanchor="center", yanchor="top",
+                ),
+                dict(
+                    x=0.5, y=0.90, xref="paper", yref="paper",
+                    text="<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ RUTIERĂ ESTIMATĂ</span>",
+                    showarrow=False, xanchor="center", yanchor="top",
+                ),
+                dict(
+                    x=0.02, y=0.02, xref="paper", yref="paper",
+                    text="<b>ECHIPAJ</b><br><span style='font-size:12px'>Răzvan + Alexandra</span><br><span style='font-size:11px'>Plecare: Ploiești</span>",
+                    showarrow=False, align="left",
+                    font=dict(size=18, color="#ffd98d"),
+                    bgcolor="rgba(4,15,24,.86)",
+                    bordercolor="#7a6330", borderwidth=1, borderpad=8,
+                ),
+            ],
+            images=[
+                dict(
+                    source=_image_data(AVATAR_DIR / "razvan_avatar.png"),
+                    xref="paper", yref="paper",
+                    x=0.015, y=0.24,
+                    sizex=0.11, sizey=0.11,
+                    xanchor="left", yanchor="bottom",
+                    sizing="contain", opacity=1, layer="above",
+                ),
+                dict(
+                    source=_image_data(AVATAR_DIR / "alexandra_avatar.png"),
+                    xref="paper", yref="paper",
+                    x=0.085, y=0.24,
+                    sizex=0.11, sizey=0.11,
+                    xanchor="left", yanchor="bottom",
+                    sizing="contain", opacity=1, layer="above",
+                ),
+            ],
+            font=dict(family="Arial, sans-serif"),
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+            config={
+                "displayModeBar": False,
+                "responsive": True,
+                "scrollZoom": True,
+            },
+        )
+
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Faza", "Ploiești → Brașov")
+        c2.metric("Echipaj", "Răzvan + Alexandra")
+        c3.metric("Vehicul", "Mașină")
+        c4.metric("Destinație", "Brașov")
+        return
+
+    # Europe and Romania overview maps.
     start = stage["start"]
     end = stage["end"]
     vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
 
     fig = go.Figure()
 
-    # Route shadow
     fig.add_trace(
         go.Scattergeo(
             lat=[start[0], end[0]],
@@ -106,7 +238,6 @@ def render_mission_map(state: MissionState) -> None:
         )
     )
 
-    # Active route
     fig.add_trace(
         go.Scattergeo(
             lat=[start[0], vehicle_lat],
@@ -118,7 +249,6 @@ def render_mission_map(state: MissionState) -> None:
         )
     )
 
-    # Remaining route
     fig.add_trace(
         go.Scattergeo(
             lat=[vehicle_lat, end[0]],
@@ -130,7 +260,6 @@ def render_mission_map(state: MissionState) -> None:
         )
     )
 
-    # City markers
     city_lats = [item[1][0] for item in stage["labels"]]
     city_lons = [item[1][1] for item in stage["labels"]]
     city_names = [item[0] for item in stage["labels"]]
@@ -153,7 +282,6 @@ def render_mission_map(state: MissionState) -> None:
         )
     )
 
-    # Vehicle
     fig.add_trace(
         go.Scattergeo(
             lat=[vehicle_lat],
@@ -165,20 +293,6 @@ def render_mission_map(state: MissionState) -> None:
             showlegend=False,
         )
     )
-
-    # Alexandra remains visible on the Romania map, even while the vehicle starts in Cluj.
-    if stage["title"] == "PROTOCOL ROMÂNIA":
-        ploiesti = LOCATIONS["ploiesti"]
-        fig.add_trace(
-            go.Scattergeo(
-                lat=[ploiesti[0]],
-                lon=[ploiesti[1]],
-                mode="markers",
-                marker=dict(size=22, color="rgba(255,112,184,.20)", line=dict(width=2, color="#ff70b8")),
-                hoverinfo="skip",
-                showlegend=False,
-            )
-        )
 
     fig.update_geos(
         domain=dict(x=[0.0, 1.0], y=[0.0, 0.76]),
