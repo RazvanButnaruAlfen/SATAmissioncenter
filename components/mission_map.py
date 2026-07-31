@@ -181,6 +181,7 @@ def render_mission_map(state: MissionState) -> None:
         )
 
     fig.update_geos(
+        domain=dict(x=[0.0, 1.0], y=[0.0, 0.76]),
         projection_type="mercator",
         showland=True,
         landcolor="#0d2233",
@@ -203,28 +204,28 @@ def render_mission_map(state: MissionState) -> None:
 
     fig.update_layout(
         height=620,
-        margin=dict(l=0, r=0, t=155, b=20),
+        margin=dict(l=0, r=0, t=20, b=20),
         paper_bgcolor="#08131e",
         plot_bgcolor="#08131e",
-        title=None,
+        title=dict(text=""),
         annotations=[
             dict(
-                x=0.5, y=1.16, xref="paper", yref="paper",
+                x=0.5, y=0.985, xref="paper", yref="paper",
                 text=f"<span style='font-size:14px;color:#63bdf4'><b>{stage['title']}</b></span>",
                 showarrow=False, xanchor="center", yanchor="top",
             ),
             dict(
-                x=0.5, y=1.10, xref="paper", yref="paper",
-                text="<span style='font-size:28px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span>",
+                x=0.5, y=0.935, xref="paper", yref="paper",
+                text="<span style='font-size:27px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span>",
                 showarrow=False, xanchor="center", yanchor="top",
             ),
             dict(
-                x=0.5, y=1.01, xref="paper", yref="paper",
-                text=f"<span style='font-size:44px;color:#f49ac2'><b>{state.distance_km} km</b></span>",
+                x=0.5, y=0.855, xref="paper", yref="paper",
+                text=f"<span style='font-size:42px;color:#f49ac2'><b>{state.distance_km} km</b></span>",
                 showarrow=False, xanchor="center", yanchor="top",
             ),
             dict(
-                x=0.5, y=0.94, xref="paper", yref="paper",
+                x=0.5, y=0.790, xref="paper", yref="paper",
                 text="<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>",
                 showarrow=False, xanchor="center", yanchor="top",
             ),
@@ -248,7 +249,7 @@ def render_mission_map(state: MissionState) -> None:
             dict(
                 source=_image_data(AVATAR_DIR / "razvan_avatar.png"),
                 xref="paper", yref="paper",
-                x=0.015, y=0.28,
+                x=0.015, y=0.24,
                 sizex=0.17, sizey=0.17,
                 xanchor="left", yanchor="bottom",
                 sizing="contain", opacity=1, layer="above",
@@ -256,7 +257,7 @@ def render_mission_map(state: MissionState) -> None:
             dict(
                 source=_image_data(AVATAR_DIR / "alexandra_avatar.png"),
                 xref="paper", yref="paper",
-                x=0.985, y=0.28,
+                x=0.985, y=0.24,
                 sizex=0.17, sizey=0.17,
                 xanchor="right", yanchor="bottom",
                 sizing="contain", opacity=1, layer="above",
