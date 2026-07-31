@@ -1,163 +1,273 @@
+from __future__ import annotations
+
 import base64
 from pathlib import Path
 
+import plotly.graph_objects as go
 import streamlit as st
-import streamlit.components.v1 as components
 
 from core.mission_state import MissionState
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 AVATAR_DIR = BASE_DIR / "assets" / "avatars"
-MAP_DIR = BASE_DIR / "assets" / "maps"
+
+LOCATIONS = {
+    "amersfoort": (52.1561, 5.3878),
+    "cluj": (46.7712, 23.6236),
+    "ploiesti": (44.9367, 26.0129),
+    "brasov": (45.6427, 25.5887),
+}
 
 
-def _data_uri(path: Path, mime: str) -> str:
+def _image_data(path: Path) -> str:
     encoded = base64.b64encode(path.read_bytes()).decode("ascii")
-    return f"data:{mime};base64,{encoded}"
+    return f"data:image/png;base64,{encoded}"
+
+
+def _interpolate(start: tuple[float, float], end: tuple[float, float], progress: float):
+    progress = max(0.0, min(1.0, progress))
+    lat = start[0] + (end[0] - start[0]) * progress
+    lon = start[1] + (end[1] - start[1]) * progress
+    return lat, lon
+
+
+def _stage(state: MissionState):
+    current = state.current_date
+
+    if current.month < 8 or (current.month == 8 and current.day < 9):
+        start = LOCATIONS["amersfoort"]
+        end = LOCATIONS["ploiesti"]
+        progress = max(0.0, min(1.0, state.progress_percent / 45))
+        return {
+            "title": "PROTOCOL EUROPA",
+            "subtitle": "Amersfoort → Ploiești",
+            "start": start,
+            "end": end,
+            "vehicle": "✈",
+            "vehicle_name": "Avion",
+            "progress": progress,
+            "lat_range": [41, 57],
+            "lon_range": [-2, 31],
+            "labels": [("Amersfoort", start), ("Ploiești", end)],
+        }
+
+    if current.month == 8 and current.day < 14:
+        start = LOCATIONS["cluj"]
+        end = LOCATIONS["ploiesti"]
+        progress = max(0.0, min(1.0, (state.progress_percent - 45) / 40))
+        return {
+            "title": "PROTOCOL ROMÂNIA",
+            "subtitle": "Cluj-Napoca → Ploiești",
+            "start": start,
+            "end": end,
+            "vehicle": "🚗",
+            "vehicle_name": "Mașină",
+            "progress": progress,
+            "lat_range": [43.4, 48.5],
+            "lon_range": [19.5, 29.8],
+            "labels": [("Cluj-Napoca", start), ("Ploiești", end)],
+        }
+
+    start = LOCATIONS["ploiesti"]
+    end = LOCATIONS["brasov"]
+    progress = 0.18 if state.phase == "Ploiești" else 1.0
+    return {
+        "title": "PROTOCOL PRAHOVA–BRAȘOV",
+        "subtitle": "Ploiești → Brașov",
+        "start": start,
+        "end": end,
+        "vehicle": "🚗",
+        "vehicle_name": "Mașină",
+        "progress": progress,
+        "lat_range": [44.45, 46.05],
+        "lon_range": [24.65, 26.65],
+        "labels": [("Ploiești", start), ("Brașov", end)],
+    }
 
 
 def render_mission_map(state: MissionState) -> None:
-    razvan = _data_uri(AVATAR_DIR / "razvan_avatar.png", "image/png")
-    alexandra = _data_uri(AVATAR_DIR / "alexandra_avatar.png", "image/png")
+    stage = _stage(state)
+    start = stage["start"]
+    end = stage["end"]
+    vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
 
-    # Three visual stages:
-    # 1) Europe before 9 August
-    # 2) Romania between 9 and 13 August
-    # 3) Prahova–Brașov zoom from 14 August onward
-    if state.current_date.day < 9 and state.current_date.month == 8 or state.current_date.month < 8:
-        map_file = "europe.svg"
-        map_title = "HARTA EUROPEI"
-        protocol = "PROTOCOL EUROPA"
-        vehicle = "✈"
-        vehicle_name = "Avion"
-        left_place = "AMERSFOORT, OLANDA"
-        right_place = "PLOIEȘTI, ROMÂNIA"
-        scene_progress = max(4, min(96, state.progress_percent))
-    elif state.current_date.month == 8 and state.current_date.day < 14:
-        map_file = "romania.svg"
-        map_title = "HARTA ROMÂNIEI"
-        protocol = "PROTOCOL ROMÂNIA"
-        vehicle = "🚗"
-        vehicle_name = "Mașină"
-        left_place = "CLUJ-NAPOCA"
-        right_place = "PLOIEȘTI"
-        scene_progress = max(8, min(92, (state.progress_percent - 45) * 100 / 40))
-    else:
-        map_file = "prahova_brasov.svg"
-        map_title = "ZOOM PRAHOVA – BRAȘOV"
-        protocol = "PROTOCOL CONTACT"
-        vehicle = "🚗"
-        vehicle_name = "Mașină"
-        left_place = "PLOIEȘTI"
-        right_place = "BRAȘOV"
-        scene_progress = max(8, min(100, 25 if state.phase == "Ploiești" else 100))
+    fig = go.Figure()
 
-    map_uri = _data_uri(MAP_DIR / map_file, "image/svg+xml")
+    # Route shadow
+    fig.add_trace(
+        go.Scattergeo(
+            lat=[start[0], end[0]],
+            lon=[start[1], end[1]],
+            mode="lines",
+            line=dict(width=8, color="rgba(22, 45, 65, 0.85)"),
+            hoverinfo="skip",
+            showlegend=False,
+        )
+    )
 
-    html = r"""
-    <style>
-    html,body{margin:0;background:transparent;font-family:Arial,sans-serif;}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-    .shell{
-      position:relative;overflow:hidden;border-radius:24px;padding:22px 30px 26px;color:#fff;
-      background:linear-gradient(145deg,#07111b,#101e2b 60%,#09131d);
-      border:1px solid #2b4354;min-height:690px;
-    }
-    .map-bg{
-      position:absolute;left:205px;right:205px;top:120px;bottom:120px;
-      background-image:url('__MAP_URI__');background-size:contain;background-position:center;background-repeat:no-repeat;
-      opacity:.82;filter:drop-shadow(0 0 18px rgba(43,125,180,.25));
-    }
-    .head{position:relative;z-index:3;text-align:center}
-    .kicker{color:#62b9f2;font-weight:800;letter-spacing:.14em;font-size:13px}
-    .title{font-size:28px;font-weight:900;margin-top:4px}
-    .distance{font-size:54px;font-weight:900;color:#f49ac2;margin-top:8px}
-    .distance-label{color:#a7b9c7;font-size:13px;letter-spacing:.08em}
-    .mission-row{
-      position:relative;z-index:4;display:grid;grid-template-columns:190px 1fr 190px;
-      align-items:center;gap:0;margin-top:34px;min-height:330px;
-    }
-    .avatar-card{text-align:center;z-index:5}
-    .avatar-img{width:150px;height:150px;object-fit:cover;animation:pulse 3.2s ease-in-out infinite}
-    .avatar-name{font-size:23px;font-weight:900;margin-top:5px}
-    .left .avatar-name{color:#56b7ff}.right .avatar-name{color:#ff82bf}
-    .place{font-size:12px;color:#c4d0da;margin-top:4px}
-    .route-track{position:absolute;left:95px;right:95px;top:104px;height:80px;z-index:4}
-    .route-base{position:absolute;left:0;right:0;top:0;height:7px;border-radius:12px;background:#30495c}
-    .route-fill{position:absolute;left:0;top:0;width:__SCENE_PROGRESS__%;height:7px;border-radius:12px;
-      background:linear-gradient(90deg,#30a9ff,#a66bff 55%,#ff70b8)}
-    .dots{position:absolute;left:0;right:0;top:-4px;display:flex;justify-content:space-between}
-    .dots span{width:13px;height:13px;border-radius:50%;background:#6e8495;border:2px solid #b5c6d2}
-    .vehicle{position:absolute;left:calc(__SCENE_PROGRESS__% - 25px);top:-42px;font-size:44px;
-      animation:float 1.7s ease-in-out infinite;text-shadow:0 0 18px rgba(255,255,255,.55)}
-    .meta{position:relative;z-index:4;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:5px}
-    .meta>div{background:rgba(5,13,20,.78);border:1px solid #294252;border-radius:14px;padding:12px;text-align:center}
-    .label{color:#8298a8;font-size:11px;letter-spacing:.1em}.value{font-weight:800;margin-top:4px}
-    </style>
+    # Active route
+    fig.add_trace(
+        go.Scattergeo(
+            lat=[start[0], vehicle_lat],
+            lon=[start[1], vehicle_lon],
+            mode="lines",
+            line=dict(width=5, color="#36aef5"),
+            hoverinfo="skip",
+            showlegend=False,
+        )
+    )
 
-    <section class="shell">
-      <div class="map-bg"></div>
-      <div class="head">
-        <div class="kicker">__MAP_TITLE__ • __PROTOCOL__</div>
-        <div class="title">MISIUNEA: APROPIERE EMOȚIONALĂ</div>
-        <div class="distance">__DISTANCE__ km</div>
-        <div class="distance-label">DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</div>
-      </div>
+    # Remaining route
+    fig.add_trace(
+        go.Scattergeo(
+            lat=[vehicle_lat, end[0]],
+            lon=[vehicle_lon, end[1]],
+            mode="lines",
+            line=dict(width=4, color="#ff70b8", dash="dot"),
+            hoverinfo="skip",
+            showlegend=False,
+        )
+    )
 
-      <div class="mission-row">
-        <div class="avatar-card left">
-          <img class="avatar-img" src="__RAZVAN__">
-          <div class="avatar-name">RĂZVAN</div>
-          <div class="place">__LEFT_PLACE__</div>
-        </div>
+    # City markers
+    city_lats = [item[1][0] for item in stage["labels"]]
+    city_lons = [item[1][1] for item in stage["labels"]]
+    city_names = [item[0] for item in stage["labels"]]
 
-        <div class="route-track">
-          <div class="route-base"></div>
-          <div class="route-fill"></div>
-          <div class="dots">
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="vehicle">__VEHICLE__</div>
-        </div>
+    fig.add_trace(
+        go.Scattergeo(
+            lat=city_lats,
+            lon=city_lons,
+            mode="markers+text",
+            text=city_names,
+            textposition=["top left", "top right"],
+            textfont=dict(size=15, color=["#68c2ff", "#ff8bc5"]),
+            marker=dict(
+                size=15,
+                color=["#35aef5", "#ff70b8"],
+                line=dict(width=3, color="#eef8ff"),
+            ),
+            hovertemplate="%{text}<extra></extra>",
+            showlegend=False,
+        )
+    )
 
-        <div></div>
+    # Vehicle
+    fig.add_trace(
+        go.Scattergeo(
+            lat=[vehicle_lat],
+            lon=[vehicle_lon],
+            mode="text",
+            text=[stage["vehicle"]],
+            textfont=dict(size=34, color="#ffffff"),
+            hovertemplate=f"{stage['vehicle_name']}<extra></extra>",
+            showlegend=False,
+        )
+    )
 
-        <div class="avatar-card right">
-          <img class="avatar-img" src="__ALEXANDRA__">
-          <div class="avatar-name">ALEXANDRA</div>
-          <div class="place">__RIGHT_PLACE__</div>
-        </div>
-      </div>
+    # Alexandra remains visible on the Romania map, even while the vehicle starts in Cluj.
+    if stage["title"] == "PROTOCOL ROMÂNIA":
+        ploiesti = LOCATIONS["ploiesti"]
+        fig.add_trace(
+            go.Scattergeo(
+                lat=[ploiesti[0]],
+                lon=[ploiesti[1]],
+                mode="markers",
+                marker=dict(size=22, color="rgba(255,112,184,.20)", line=dict(width=2, color="#ff70b8")),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
 
-      <div class="meta">
-        <div><div class="label">FAZA</div><div class="value">__PHASE__</div></div>
-        <div><div class="label">VEHICUL</div><div class="value">__VEHICLE_NAME__</div></div>
-        <div><div class="label">URMĂTORUL PUNCT</div><div class="value">__NEXT_TARGET__</div></div>
-        <div><div class="label">PROGRES TOTAL</div><div class="value">__TOTAL_PROGRESS__%</div></div>
-      </div>
-    </section>
-    """
+    fig.update_geos(
+        projection_type="mercator",
+        showland=True,
+        landcolor="#0d2233",
+        showocean=True,
+        oceancolor="#07131e",
+        showlakes=True,
+        lakecolor="#07131e",
+        showcountries=True,
+        countrycolor="#34749d",
+        countrywidth=1.1,
+        showcoastlines=True,
+        coastlinecolor="#34749d",
+        coastlinewidth=1.2,
+        showframe=False,
+        bgcolor="rgba(0,0,0,0)",
+        lataxis_range=stage["lat_range"],
+        lonaxis_range=stage["lon_range"],
+        resolution=50,
+    )
 
-    replacements = {
-        "__MAP_URI__": map_uri,
-        "__MAP_TITLE__": map_title,
-        "__PROTOCOL__": protocol,
-        "__DISTANCE__": str(state.distance_km),
-        "__SCENE_PROGRESS__": f"{scene_progress:.1f}",
-        "__RAZVAN__": razvan,
-        "__ALEXANDRA__": alexandra,
-        "__LEFT_PLACE__": left_place,
-        "__RIGHT_PLACE__": right_place,
-        "__VEHICLE__": vehicle,
-        "__VEHICLE_NAME__": vehicle_name,
-        "__PHASE__": state.phase,
-        "__NEXT_TARGET__": state.next_target,
-        "__TOTAL_PROGRESS__": str(state.progress_percent),
-    }
-    for key, value in replacements.items():
-        html = html.replace(key, value)
+    fig.update_layout(
+        height=620,
+        margin=dict(l=0, r=0, t=105, b=20),
+        paper_bgcolor="#08131e",
+        plot_bgcolor="#08131e",
+        title=dict(
+            text=(
+                f"<span style='font-size:14px;color:#63bdf4'>{stage['title']}</span><br>"
+                f"<span style='font-size:28px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span><br>"
+                f"<span style='font-size:46px;color:#f49ac2'><b>{state.distance_km} km</b></span><br>"
+                f"<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>"
+            ),
+            x=0.5,
+            xanchor="center",
+            y=0.98,
+            yanchor="top",
+        ),
+        annotations=[
+            dict(
+                x=0.02, y=0.02, xref="paper", yref="paper",
+                text="<b>RĂZVAN</b><br><span style='font-size:12px'>Amersfoort, Olanda</span>",
+                showarrow=False, align="left",
+                font=dict(size=18, color="#59b9ff"),
+                bgcolor="rgba(4,15,24,.78)", bordercolor="#2d536b", borderwidth=1, borderpad=8,
+            ),
+            dict(
+                x=0.98, y=0.02, xref="paper", yref="paper",
+                text="<b>ALEXANDRA</b><br><span style='font-size:12px'>Ploiești, România</span>",
+                showarrow=False, align="right",
+                xanchor="right",
+                font=dict(size=18, color="#ff82bf"),
+                bgcolor="rgba(4,15,24,.78)", bordercolor="#67405a", borderwidth=1, borderpad=8,
+            ),
+        ],
+        images=[
+            dict(
+                source=_image_data(AVATAR_DIR / "razvan_avatar.png"),
+                xref="paper", yref="paper",
+                x=0.015, y=0.28,
+                sizex=0.17, sizey=0.17,
+                xanchor="left", yanchor="bottom",
+                sizing="contain", opacity=1, layer="above",
+            ),
+            dict(
+                source=_image_data(AVATAR_DIR / "alexandra_avatar.png"),
+                xref="paper", yref="paper",
+                x=0.985, y=0.28,
+                sizex=0.17, sizey=0.17,
+                xanchor="right", yanchor="bottom",
+                sizing="contain", opacity=1, layer="above",
+            ),
+        ],
+        font=dict(family="Arial, sans-serif"),
+    )
 
-    components.html(html, height=735, scrolling=False)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={
+            "displayModeBar": False,
+            "responsive": True,
+            "scrollZoom": False,
+        },
+    )
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Faza", state.phase)
+    c2.metric("Vehicul", stage["vehicle_name"])
+    c3.metric("Următorul punct", state.next_target)
+    c4.metric("Progres total", f"{state.progress_percent}%")
