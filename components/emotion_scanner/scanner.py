@@ -8,8 +8,7 @@ import streamlit as st
 
 from core.mission_state import MissionState
 from core.sata_memory import record_emos_scan
-from components.recovered_packets.engine import register_action
-from components.recovered_packets import render_recovered_packets
+from core.sata_event_engine import notify_active_action
 from .animation import overlay_html
 from .config import DETECTION_DELAY, RARE_RESULT_PROBABILITY, RESULT_DELAY, SCAN_STEP_DELAY
 from .messages import (
@@ -72,7 +71,7 @@ def render_emotion_scanner(state: MissionState) -> None:
             text=text,
             scan_date=state.current_date.isoformat(),
         )
-        register_action(
+        notify_active_action(
             today=state.current_date,
             trigger="emos_scan",
             rng=rng,
@@ -82,4 +81,3 @@ def render_emotion_scanner(state: MissionState) -> None:
     if result:
         render_result(*result)
 
-    render_recovered_packets(state.current_date)
