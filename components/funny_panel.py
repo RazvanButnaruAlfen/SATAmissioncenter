@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import date
-import hashlib
 import random
 
 import streamlit as st
@@ -18,14 +17,20 @@ GENERAL_MESSAGES = [
     "Prognoza meteo a fost verificată suficient. Vremea refuză în continuare să garanteze ceva.",
     "S.A.T.A. recomandă evitarea analizării fiecărei pauze de răspuns ca pe un incident diplomatic.",
     "Nivelul de negare este în limite normale pentru o persoană care susține că nu este emoționată.",
+    "Nu s-au detectat deplasări majore. Gândurile au parcurs însă o distanță considerabilă.",
+    "Toate sistemele sunt stabile. Curiozitatea continuă să ruleze fără autorizație.",
+    "S.A.T.A. a analizat situația. Situația a refuzat să fie analizată.",
+    "S-au detectat zâmbete posibile. Confirmarea vizuală rămâne clasificată.",
 ]
 
 PHRASE_PROBABILITIES = [
-    ("„Vedem.”", 91, "Traducere estimată: există deja cel puțin trei scenarii."),
-    ("„Nu sunt stresată.”", 97, "Credibilitate estimată de sistem: 3%."),
-    ("„Lasă...”", 84, "S.A.T.A. recomandă să nu insiste nimeni."),
-    ("„Nu contează.”", 93, "Evaluare internă: probabil contează."),
-    ("„Mai vorbim.”", 82, "Subiectul rămâne deschis și monitorizat."),
+    ("„Vedem.”", (84, 96), "Traducere estimată: există deja cel puțin trei scenarii."),
+    ("„Nu sunt stresată.”", (90, 99), "Credibilitate estimată de sistem: foarte creativă."),
+    ("„Lasă...”", (76, 91), "S.A.T.A. recomandă să nu insiste nimeni."),
+    ("„Nu contează.”", (86, 97), "Evaluare internă: probabil contează."),
+    ("„Mai vorbim.”", (74, 90), "Subiectul rămâne deschis și monitorizat."),
+    ("„Sunt foarte calmă.”", (88, 99), "Sistemul a pornit automat o verificare suplimentară."),
+    ("„Nu mă gândesc la asta.”", (91, 99), "Afirmația a fost mutată în dosarul «optimism suspect»."),
 ]
 
 RECOMMENDATIONS = [
@@ -34,41 +39,87 @@ RECOMMENDATIONS = [
     "Nu toate momentele importante trebuie planificate.",
     "Păstrați nivelul de panică sub 80%. Restul este negociabil.",
     "Sistemul recomandă mai puține scenarii și mai multă realitate.",
-    "Nu există niciun cronometru.",
+    "Nu există niciun cronometru. S.A.T.A. a verificat de două ori.",
     "Weekendul nu are obiective obligatorii. Doar posibilități.",
     "Dacă planul se schimbă, aplicația va pretinde că a prevăzut asta.",
+    "Luați lucrurile pe rând. Algoritmii care au încercat altfel sunt acum în mentenanță.",
+    "O cafea poate ajuta. Trei cafele pot produce o nouă problemă.",
+    "Sistemul recomandă o glumă bună și o reducere temporară a analizelor.",
+    "Nu transformați fiecare tăcere într-un document clasificat.",
+    "Uneori cea mai bună strategie este să vedeți ce se întâmplă.",
+    "S.A.T.A. recomandă păstrarea unei aparențe rezonabile de calm.",
+    "Nicio decizie importantă nu trebuie luată înainte de micul dejun.",
+]
+
+SUMMARIES = [
+    "Situația rămâne stabilă, interesantă și imposibil de măsurat corect.",
+    "Conexiunea este confirmată. Restul datelor sunt în curs de inventare.",
+    "Nu există motive reale de alarmă. Există însă suficiente motive de curiozitate.",
+    "S.A.T.A. estimează că lucrurile merg bine. Acuratețea acestei afirmații este clasificată.",
+    "Misiunea continuă conform planului, inclusiv acolo unde nu există un plan.",
+    "Nivelul general este pozitiv. Nivelul de supra-analiză rămâne impresionant.",
+    "Toate drumurile duc spre România. Unele gânduri au ajuns deja.",
+    "Concluzie provizorie: mai puțină panică, mai multe momente bune.",
+    "Sistemul nu poate prezice finalul. Consideră aceasta o îmbunătățire.",
+    "Distanța există. Conexiunea pare să o ignore.",
+    "Raportul confirmă apropierea. Departamentul de obiectivitate nu a participat.",
+    "Totul pare suspect de promițător.",
 ]
 
 SPECIAL_MESSAGES = {
-    date(2026, 8, 9): (
-        "EVENIMENT MAJOR",
-        "Răzvan a intrat pe teritoriul României. Alexandra declară că situația este sub control. Sistemul rămâne sceptic.",
-    ),
-    date(2026, 8, 12): (
-        "DEPLASARE INTERNĂ",
-        "Subiectul părăsește Cluj-Napoca. Nivelul de proximitate crește. Nivelul de calm declarat rămâne suspect de constant.",
-    ),
-    date(2026, 8, 13): (
-        "STAȚIONARE TÂRGU MUREȘ",
-        "Ultima oprire înainte de Ploiești. S.A.T.A. recomandă reducerea simulărilor mentale la maximum 12 pe oră.",
-    ),
-    date(2026, 8, 14): (
-        "CONTACT ÎN PLOIEȘTI",
-        "Distanța operațională a fost redusă la zero. Sistemul nu garantează că și emoțiile vor urma aceeași tendință.",
-    ),
-    date(2026, 8, 15): (
-        "OPERAȚIUNEA BRAȘOV",
-        "Sistemul suspendă predicțiile. Motiv oficial: realitatea urmează să fie observată direct.",
-    ),
+    date(2026, 8, 9): [
+        ("EVENIMENT MAJOR", "Răzvan a intrat pe teritoriul României. Alexandra declară că situația este sub control. Sistemul rămâne sceptic."),
+        ("PROTOCOL EINDHOVEN", "Decolarea a fost confirmată. Emoțiile nu au respectat procedura de îmbarcare."),
+        ("INTRARE ÎN ROMÂNIA", "Distanța fizică scade. Numărul scenariilor mentale refuză să coopereze."),
+    ],
+    date(2026, 8, 12): [
+        ("DEPLASARE INTERNĂ", "Subiectul părăsește Cluj-Napoca. Nivelul de proximitate crește."),
+        ("PROTOCOL TRANSILVANIA", "Clujul rămâne în urmă. Ploieștiul începe să pară suspect de aproape."),
+        ("TRASEU ACTIV", "S.A.T.A. monitorizează deplasarea și ignoră elegant nerăbdarea."),
+    ],
+    date(2026, 8, 13): [
+        ("STAȚIONARE TÂRGU MUREȘ", "Ultima oprire înainte de Ploiești. Simulările mentale au depășit limita recomandată."),
+        ("ULTIMA OPRIRE", "Sistemul recomandă odihnă. Recomandarea are șanse reduse de implementare."),
+        ("PROXIMITATE ÎN CREȘTERE", "Orele rămase sunt numărate de mai multe sisteme decât este necesar."),
+    ],
+    date(2026, 8, 14): [
+        ("CONTACT ÎN PLOIEȘTI", "Distanța operațională a fost redusă la zero. Obiectivitatea a părăsit sistemul."),
+        ("PLOIEȘTI CONFIRMAT", "Aproape 2000 km au devenit câțiva pași. Algoritmii solicită o pauză."),
+        ("CONTACT VIZUAL", "S.A.T.A. suspendă simulările. Realitatea a preluat controlul."),
+    ],
+    date(2026, 8, 15): [
+        ("OPERAȚIUNEA BRAȘOV", "Sistemul suspendă predicțiile. Realitatea urmează să fie observată direct."),
+        ("PROTOCOL CARPAȚI", "Echipajul comun este confirmat. Toate concluziile sunt provizorii."),
+        ("BRAȘOV ACTIV", "Misiunea continuă fără obiective obligatorii și cu probabilitate ridicată de amintiri bune."),
+    ],
 }
 
 
-def _seed(state: MissionState, salt: str) -> int:
-    key = f"{state.current_date.isoformat()}::{salt}".encode("utf-8")
-    return int(hashlib.sha256(key).hexdigest()[:12], 16)
+def _choice_for_session(
+    state: MissionState,
+    name: str,
+    candidates: list,
+):
+    """Choose once per browser session and avoid immediate repetition."""
+    key = f"sata_funny::{state.current_date.isoformat()}::{name}"
+
+    if key in st.session_state:
+        return st.session_state[key]
+
+    previous_key = f"sata_funny_previous::{name}"
+    previous = st.session_state.get(previous_key)
+
+    available = [item for item in candidates if item != previous]
+    if not available:
+        available = list(candidates)
+
+    selected = random.SystemRandom().choice(available)
+    st.session_state[key] = selected
+    st.session_state[previous_key] = selected
+    return selected
 
 
-def _panic_value(state: MissionState) -> int:
+def _panic_base(state: MissionState) -> int:
     if state.current_date < date(2026, 8, 9):
         days = max(0, (date(2026, 8, 9) - state.current_date).days)
         return max(22, 58 - days * 4)
@@ -85,23 +136,43 @@ def _panic_value(state: MissionState) -> int:
     return 54
 
 
-def render_funny_panel(state: MissionState) -> None:
-    rng_message = random.Random(_seed(state, "message"))
-    rng_phrase = random.Random(_seed(state, "phrase"))
-    rng_recommendation = random.Random(_seed(state, "recommendation"))
+def _session_number(state: MissionState, name: str, low: int, high: int) -> int:
+    key = f"sata_funny_number::{state.current_date.isoformat()}::{name}"
+    if key not in st.session_state:
+        st.session_state[key] = random.SystemRandom().randint(low, high)
+    return int(st.session_state[key])
 
+
+def render_funny_panel(state: MissionState) -> None:
     special = SPECIAL_MESSAGES.get(state.current_date)
     if special:
-        bulletin_title, bulletin_text = special
+        bulletin_title, bulletin_text = _choice_for_session(
+            state, "special_bulletin", special
+        )
     else:
         bulletin_title = "BULETIN OPERATIV"
-        bulletin_text = rng_message.choice(GENERAL_MESSAGES)
+        bulletin_text = _choice_for_session(
+            state, "general_bulletin", GENERAL_MESSAGES
+        )
 
-    phrase, probability, phrase_note = rng_phrase.choice(PHRASE_PROBABILITIES)
-    recommendation = rng_recommendation.choice(RECOMMENDATIONS)
-    panic = _panic_value(state)
-    denial = min(99, panic + 6)
-    phone_checks = max(4, round(panic / 4))
+    phrase, probability_range, phrase_note = _choice_for_session(
+        state, "phrase", PHRASE_PROBABILITIES
+    )
+    probability = _session_number(
+        state, "phrase_probability", probability_range[0], probability_range[1]
+    )
+    recommendation = _choice_for_session(
+        state, "recommendation", RECOMMENDATIONS
+    )
+    summary = _choice_for_session(state, "summary", SUMMARIES)
+
+    panic_base = _panic_base(state)
+    panic = max(0, min(100, panic_base + _session_number(state, "panic_jitter", -4, 5)))
+    denial = max(0, min(99, panic + _session_number(state, "denial_delta", 3, 10)))
+    phone_checks = max(
+        3,
+        round(panic / 4) + _session_number(state, "phone_jitter", -2, 2),
+    )
 
     st.markdown(
         f"""
@@ -177,6 +248,17 @@ def render_funny_panel(state: MissionState) -> None:
         .recommendation-card .funny-title {{
             color:#775c14;
         }}
+        .summary-card {{
+            background:#102436;
+            color:#f4f7fa;
+            border-radius:16px;
+            padding:20px;
+            margin-top:14px;
+            border:1px solid #294f68;
+        }}
+        .summary-card .funny-title {{
+            color:#68c2ff;
+        }}
         @media(max-width:800px) {{
             .funny-grid {{grid-template-columns:1fr;}}
             .indicator-grid {{grid-template-columns:1fr;}}
@@ -212,8 +294,13 @@ def render_funny_panel(state: MissionState) -> None:
         </div>
 
         <div class="recommendation-card">
-          <div class="funny-title">RECOMANDAREA S.A.T.A.</div>
+          <div class="funny-title">RECOMANDAREA ZILEI</div>
           <div class="funny-main">{recommendation}</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="funny-title">REZUMATUL S.A.T.A.</div>
+          <div class="funny-main">{summary}</div>
         </div>
         """,
         unsafe_allow_html=True,
