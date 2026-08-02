@@ -12,10 +12,11 @@ from components.emotion_scanner import render_emotion_scanner
 from components.classified_archives import render_classified_archives
 from components.system_status import render_system_status
 from core.mission_engine import get_mission_state
+from core.app_config import APP_ICON, APP_TITLE
 
 st.set_page_config(
-    page_title="S.A.T.A. Mission Center — Development Build",
-    page_icon="📡",
+    page_title=APP_TITLE,
+    page_icon=APP_ICON,
     layout="wide",
 )
 
