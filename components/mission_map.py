@@ -1200,12 +1200,30 @@ def render_mission_map(
             showlegend=False,
         )
     )
+    # Scattermapbox does not support line.dash. Build the dotted route
+    # from short visible segments separated by gaps.
+    route_lat: list[float | None] = []
+    route_lon: list[float | None] = []
+    segment_count = 34
+
+    for index in range(segment_count):
+        start_t = index / segment_count
+        end_t = min(1.0, start_t + 0.52 / segment_count)
+
+        lat_a = start[0] + (end[0] - start[0]) * start_t
+        lon_a = start[1] + (end[1] - start[1]) * start_t
+        lat_b = start[0] + (end[0] - start[0]) * end_t
+        lon_b = start[1] + (end[1] - start[1]) * end_t
+
+        route_lat.extend([lat_a, lat_b, None])
+        route_lon.extend([lon_a, lon_b, None])
+
     fig.add_trace(
         go.Scattermapbox(
-            lat=[start[0], end[0]],
-            lon=[start[1], end[1]],
+            lat=route_lat,
+            lon=route_lon,
             mode="lines",
-            line=dict(width=4, color="#ff70b8", dash="dot"),
+            line=dict(width=4, color="#ff70b8"),
             hoverinfo="skip",
             showlegend=False,
         )
