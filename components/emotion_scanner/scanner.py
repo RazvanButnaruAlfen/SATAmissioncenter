@@ -8,8 +8,8 @@ import streamlit as st
 
 from core.mission_state import MissionState
 from core.sata_memory import record_emos_scan
-from core.recovered_packet_engine import register_action
-from components.recovered_packets import render_recovered_packet
+from components.recovered_packets.engine import register_action
+from components.recovered_packets import render_recovered_packets
 from .animation import overlay_html
 from .config import DETECTION_DELAY, RARE_RESULT_PROBABILITY, RESULT_DELAY, SCAN_STEP_DELAY
 from .messages import (
@@ -82,4 +82,4 @@ def render_emotion_scanner(state: MissionState) -> None:
     if result:
         render_result(*result)
 
-    render_recovered_packet(state.current_date)
+    render_recovered_packets(state.current_date)
