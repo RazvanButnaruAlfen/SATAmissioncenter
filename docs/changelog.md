@@ -1,5 +1,16 @@
 # Changelog
 
+## Revizie lingvistică — limba română
+- Corectat „curiositate” în „curiozitate”.
+- Revizuite rezultatele E.M.O.S. și formulările care sunau traduse.
+- Corectate etichetele „Probabilitate de panică”, „Nivel de negare” și „Verificări estimate ale telefonului”.
+- Înlocuit „Rezultat scanare” cu „Rezultatul scanării”.
+- Revizuite textele din Dosarele clasificate, evenimentele S.A.T.A. și pachetele recuperate.
+- Românizate denumirile exercițiilor „plank” și „cat-cow”.
+- Adăugat ghidul de stil `docs/SATA_STYLE_GUIDE.md`.
+
+# Changelog
+
 ## 0.5.4 RC5 — Europe Header Spacing Fix
 - Separat protocolul, titlul, distanța și subtitlul în patru adnotări Plotly independente.
 - Adăugat un singur panou de fundal stabil în locul unei adnotări HTML multiliniar.
