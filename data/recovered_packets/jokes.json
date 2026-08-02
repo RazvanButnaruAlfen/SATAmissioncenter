@@ -1,0 +1,42 @@
+[
+  {
+    "id": "JOKE-001",
+    "category": "joke",
+    "icon": "😂",
+    "title": "BANC INTERCEPTAT",
+    "content": "De ce nu folosește S.A.T.A. o busolă? Pentru că indică mereu spre Alexandra și strică toate măsurătorile.",
+    "comment": "Precizia glumei nu a putut fi verificată."
+  },
+  {
+    "id": "JOKE-002",
+    "category": "joke",
+    "icon": "😂",
+    "title": "FRAGMENT UMORISTIC",
+    "content": "S.A.T.A. a încercat să măsoare dorul în kilometri. Departamentul de matematică și-a dat demisia.",
+    "comment": "Incidentul rămâne sub investigație."
+  },
+  {
+    "id": "JOKE-003",
+    "category": "joke",
+    "icon": "😂",
+    "title": "TRANSMISIE NEAUTORIZATĂ",
+    "content": "Care este diferența dintre un algoritm și Răzvan? Algoritmul știe când să nu mai analizeze.",
+    "comment": "Răzvan contestă concluzia."
+  },
+  {
+    "id": "JOKE-004",
+    "category": "joke",
+    "icon": "😂",
+    "title": "GLUMĂ RECUPERATĂ",
+    "content": "S.A.T.A. a cerut o pauză. Motivul oficial: prea multe emoții și prea puțină cafea.",
+    "comment": "Cererea a fost respinsă."
+  },
+  {
+    "id": "JOKE-005",
+    "category": "joke",
+    "icon": "😂",
+    "title": "BULETIN UMORISTIC",
+    "content": "De ce a trecut satelitul strada? Pentru că semnalul Alexandrei era mai bun pe partea cealaltă.",
+    "comment": "Nici satelitul nu este mulțumit de această glumă."
+  }
+]

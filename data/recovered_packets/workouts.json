@@ -1,0 +1,34 @@
+[
+  {
+    "id": "WORKOUT-001",
+    "category": "workout",
+    "icon": "💪",
+    "title": "PROGRAM FIZIC RECUPERAT",
+    "content": "Circuit de 8 minute: 12 genuflexiuni, 10 fandări pe fiecare picior, 20 de secunde plank și 10 flotări la perete. Repetă de două ori, în ritm confortabil.",
+    "comment": "Scopul este energia, nu pedepsirea operatorului."
+  },
+  {
+    "id": "WORKOUT-002",
+    "category": "workout",
+    "icon": "🧘",
+    "title": "PROTOCOL DE MOBILITATE",
+    "content": "5 minute: rotiri ușoare de umeri, întindere pentru șolduri, cat-cow, aplecare înainte relaxată și 5 respirații lente.",
+    "comment": "S.A.T.A. confirmă că și statul liniștit poate fi o activitate."
+  },
+  {
+    "id": "WORKOUT-003",
+    "category": "workout",
+    "icon": "🚶",
+    "title": "MISIUNE FIZICĂ UȘOARĂ",
+    "content": "O plimbare de 20 de minute fără grabă. Bonus operațional dacă telefonul rămâne în buzunar cel puțin jumătate din timp.",
+    "comment": "Monitorizarea S.A.T.A. va pretinde că nu este deranjată."
+  },
+  {
+    "id": "WORKOUT-004",
+    "category": "workout",
+    "icon": "🏋️",
+    "title": "MINI ANTRENAMENT",
+    "content": "3 runde: 10 genuflexiuni, 8 ridicări de bazin, 8 flotări la perete și 20 de secunde de mers rapid pe loc. Pauză 30 de secunde între runde.",
+    "comment": "Transpirația nu este clasificată."
+  }
+]

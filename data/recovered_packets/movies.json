@@ -1,0 +1,34 @@
+[
+  {
+    "id": "MOVIE-001",
+    "category": "movie",
+    "icon": "🎬",
+    "title": "RECOMANDARE DE FILM",
+    "content": "About Time — romantic, amuzant și mai ales despre valoarea momentelor obișnuite petrecute cu oamenii importanți.",
+    "comment": "Probabilitate de zâmbet comun: ridicată."
+  },
+  {
+    "id": "MOVIE-002",
+    "category": "movie",
+    "icon": "🎬",
+    "title": "ARHIVĂ CINEMATOGRAFICĂ",
+    "content": "Before Sunrise — doi oameni, un oraș și o conversație care devine mai importantă decât planul inițial.",
+    "comment": "S.A.T.A. detectează asemănări tematice. Nu dezvoltă."
+  },
+  {
+    "id": "MOVIE-003",
+    "category": "movie",
+    "icon": "🎬",
+    "title": "RECOMANDARE ROMANTICĂ",
+    "content": "Notting Hill — o comedie romantică relaxată, potrivită pentru o seară fără obiective operaționale.",
+    "comment": "Popcornul rămâne opțional, dar strategic."
+  },
+  {
+    "id": "MOVIE-004",
+    "category": "movie",
+    "icon": "🎬",
+    "title": "FIȘIER DE SEARĂ",
+    "content": "The Holiday — două povești, o schimbare de decor și suficient confort cinematografic pentru o seară liniștită.",
+    "comment": "Ceaiul sau vinul nu intră în responsabilitatea sistemului."
+  }
+]

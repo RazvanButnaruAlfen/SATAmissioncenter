@@ -1,0 +1,34 @@
+[
+  {
+    "id": "RECIPE-001",
+    "category": "recipe",
+    "icon": "🍝",
+    "title": "REȚETĂ RECUPERATĂ",
+    "content": "Paste carbonara: rumenește guanciale sau pancetta. Amestecă ouă cu pecorino sau parmezan și piper. Combină cu pastele fierbinți în afara focului, folosind puțină apă de la paste. Fără smântână.",
+    "comment": "Candidat promițător pentru testare cu Răzvan."
+  },
+  {
+    "id": "RECIPE-002",
+    "category": "recipe",
+    "icon": "🍲",
+    "title": "FIȘIER CULINAR RECUPERAT",
+    "content": "Pui cu curry rapid: călește ceapă și usturoi, adaugă pui, curry, puțin ghimbir, roșii și lapte de cocos. Fierbe 15–20 de minute și servește cu orez.",
+    "comment": "Mirosul rezultat poate compromite caracterul secret al misiunii."
+  },
+  {
+    "id": "RECIPE-003",
+    "category": "recipe",
+    "icon": "🥞",
+    "title": "PROTOCOL PAPANAȘI",
+    "content": "Amestecă brânză de vaci bine scursă cu ou, puțin zahăr, făină și coajă de lămâie. Formează papanașii, prăjește-i și servește-i cu smântână și dulceață.",
+    "comment": "Probabilitatea ca Răzvan să refuze: extrem de redusă."
+  },
+  {
+    "id": "RECIPE-004",
+    "category": "recipe",
+    "icon": "🍳",
+    "title": "MIC DEJUN OPERAȚIONAL",
+    "content": "Ouă jumări cremoase: gătește-le la foc mic cu puțin unt, amestecând des. Adaugă sare spre final și servește cu pâine prăjită și cafea.",
+    "comment": "Piperul poate depăși limitele recomandate de laborator."
+  }
+]

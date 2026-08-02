@@ -1,0 +1,50 @@
+[
+  {
+    "id": "FACT-001",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "FUN FACT RECUPERAT",
+    "content": "Caracatițele au trei inimi, iar două dintre ele se opresc temporar când animalul înoată.",
+    "comment": "S.A.T.A. recomandă mersul pe jos. Pare mai simplu."
+  },
+  {
+    "id": "FACT-002",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "FRAGMENT DIN ARHIVA PUBLICĂ",
+    "content": "Bananele sunt, din punct de vedere botanic, fructe de pădure. Căpșunile nu sunt.",
+    "comment": "Botanica a complicat inutil situația."
+  },
+  {
+    "id": "FACT-003",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "FAPT ISTORIC INTERCEPTAT",
+    "content": "Napoleon a fost cândva atacat de un grup mare de iepuri organizați pentru o partidă de vânătoare.",
+    "comment": "Evaluarea amenințării: neașteptată."
+  },
+  {
+    "id": "FACT-004",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "FAPT COSMIC RECUPERAT",
+    "content": "Pe Venus, o zi este mai lungă decât un an venusian.",
+    "comment": "S.A.T.A. refuză să actualizeze calendarul."
+  },
+  {
+    "id": "FACT-005",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "DATE BIOLOGICE",
+    "content": "Vidrele de mare se țin uneori de lăbuțe când dorm, ca să nu se îndepărteze una de alta.",
+    "comment": "Comportament operațional surprinzător de eficient."
+  },
+  {
+    "id": "FACT-006",
+    "category": "fun_fact",
+    "icon": "🧠",
+    "title": "ARHIVĂ ALEATORIE",
+    "content": "Mierea poate rămâne comestibilă mii de ani dacă este păstrată corect.",
+    "comment": "S.A.T.A. nu recomandă testarea cu un borcan găsit într-un mormânt."
+  }
+]
