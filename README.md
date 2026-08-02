@@ -1,6 +1,6 @@
 # S.A.T.A. Mission Center — Development Build
 
-Mediu separat de dezvoltare pentru noua aplicație S.A.T.A.
+Sistem Automat pentru Tensiunea Alexandrei. O misiune interactivă care urmărește apropierea dintre Amersfoort și Ploiești.
 
 ## Deploy
 
