@@ -8,6 +8,7 @@ from components.footer import render_footer
 from components.funny_panel import render_funny_panel
 from components.knowledge_panel import render_knowledge_panel
 from components.lab_launcher import render_lab_launcher
+from components.emotion_scanner import render_emotion_scanner
 from core.mission_engine import get_mission_state
 
 st.set_page_config(
@@ -25,5 +26,6 @@ render_timeline(state)
 render_cards(state)
 render_funny_panel(state)
 render_knowledge_panel(state)
+render_emotion_scanner(state)
 render_lab_launcher()
 render_footer()
