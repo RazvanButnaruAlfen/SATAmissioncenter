@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.4 RC5 — Europe Header Spacing Fix
+- Separat protocolul, titlul, distanța și subtitlul în patru adnotări Plotly independente.
+- Adăugat un singur panou de fundal stabil în locul unei adnotări HTML multiliniar.
+- Eliminată suprapunerea dintre titlul misiunii și kilometri.
+- Păstrat aspectul hărții detaliate pe tot fundalul.
+
+# Changelog
+
 ## 0.5.3 RC4 — Plotly Route Fix
 - Eliminată proprietatea neacceptată `dash` din Scattermapbox.
 - Ruta punctată Europa este construită acum din segmente separate.
