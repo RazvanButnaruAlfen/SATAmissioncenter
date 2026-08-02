@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.2 RC3 — Secret Map Restoration
+- Restaurat badge-ul TOP SECRET în versiunea Release, fără marcajul DEV.
+- Harta Europei ocupă din nou întregul fundal al panoului.
+- Folosită o hartă cartografică detaliată, în același limbaj cu etapele din România.
+- Titlul, distanța, avatarurile și informațiile sunt suprapuse peste hartă.
+- Cardurile de status au fost refăcute pentru a nu mai tăia textele lungi.
+
+# Changelog
+
 ## 0.5.1 RC2 — Release Interface
 - Eliminată navigarea automată Streamlit din sidebar.
 - Ascunse controalele pentru simularea datei în Release Mode.
