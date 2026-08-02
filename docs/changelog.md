@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0 — Recovered Packets v1
+- Modularizat complet subsistemul Recovered Packets.
+- Adăugate bancuri, fun facts, rețete, filme și mini-antrenamente.
+- Fiecare categorie este păstrată într-un fișier JSON separat.
+- Adăugat sistem invizibil de probabilitate cu șansă crescătoare.
+- Surpriza este garantată după suficiente interacțiuni, fără afișarea regulii.
+- Pachetele nu se repetă în aceeași zi până la epuizarea listei.
+- Adăugată animație de decriptare.
+- Adăugată arhivă locală a pachetelor recuperate în sesiune.
+
+# Changelog
+
 ## 0.3.6 RC3 — Dynamic Scan Results
 - Recomandarea Dosarelor Clasificate este acum contextuală.
 - După o scanare, sistemul confirmă explicit că datele E.M.O.S. au fost recepționate.
