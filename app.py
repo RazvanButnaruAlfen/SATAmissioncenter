@@ -1,5 +1,6 @@
 import streamlit as st
 from components.header import render_header
+from components.device import detect_device
 from components.mission_map import render_mission_map
 from components.timeline import render_timeline
 from components.cards import render_cards
@@ -15,9 +16,10 @@ st.set_page_config(
     layout="wide",
 )
 
+device = detect_device()
 state = get_mission_state()
 render_header()
-render_mission_map(state)
+render_mission_map(state, is_mobile=device.is_mobile)
 render_timeline(state)
 render_cards(state)
 render_funny_panel(state)
