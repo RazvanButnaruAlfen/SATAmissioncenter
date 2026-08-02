@@ -11,8 +11,8 @@ def render_header() -> None:
         .archive-copy{margin-top:.55rem;color:#c2afbd;line-height:1.45}
         </style>
         <div class="archive-shell">
-          <div class="archive-kicker">S.A.T.A. • CLASSIFIED ARCHIVES</div>
-          <div class="archive-title">🔒 Dosare Clasificate</div>
+          <div class="archive-kicker">S.A.T.A. • DOSARE CLASIFICATE</div>
+          <div class="archive-title">🔒 Dosare clasificate</div>
           <div class="archive-copy">Accesul este protejat prin standarde emoționale pe care sistemul le modifică atunci când este convenabil.</div>
         </div>
         """,

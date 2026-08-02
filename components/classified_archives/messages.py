@@ -18,7 +18,7 @@ def recommendation_for_denial(
 ) -> str:
     if not scan_completed:
         return (
-            "Nu există încă date E.M.O.S. Recomandăm Scanarea Emoțională "
+            "Nu există încă date E.M.O.S. Recomandăm scanarea emoțională "
             "pentru determinarea nivelului operațional de dor."
         )
 
@@ -35,7 +35,7 @@ def recommendation_for_denial(
             f"de acces este {minimum_score}%, iar valoarea actuală este "
             f"{score}% — cu {difference} puncte sub cerința inventată de sistem. "
             "O nouă scanare este opțională; rezultatele pot fluctua deoarece "
-            "S.A.T.A. insistă că emoțiile nu sunt componente calibrate."
+            "S.A.T.A. insistă că emoțiile nu sunt componente calibrabile."
         )
 
     return (
