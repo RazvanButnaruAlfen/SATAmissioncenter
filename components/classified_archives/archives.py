@@ -13,8 +13,9 @@ from core.sata_memory import (
     register_archive_attempt,
 )
 from .documents import DOCUMENTS
-from .messages import RECOMMENDATION
+from .messages import recommendation_for_denial
 from .security import check_access
+from .config import MIN_LONGING_FOR_ACCESS
 from .ui import render_denied, render_document, render_header
 
 
@@ -56,4 +57,9 @@ def render_classified_archives(state: MissionState) -> None:
     if document:
         render_document(document)
     elif denial:
-        render_denied(denial[0], denial[1], RECOMMENDATION)
+        recommendation = recommendation_for_denial(
+            scan_completed=has_completed_emos_scan(),
+            score=denial[1],
+            minimum_score=MIN_LONGING_FOR_ACCESS,
+        )
+        render_denied(denial[0], denial[1], recommendation)
