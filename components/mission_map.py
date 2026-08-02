@@ -42,7 +42,7 @@ def _stage(state: MissionState):
         end = LOCATIONS["ploiesti"]
         progress = max(0.0, min(1.0, state.progress_percent / 45))
         return {
-            "title": "PROTOCOL EUROPA • BUILD 0.2.21",
+            "title": "PROTOCOL EUROPA",
             "subtitle": "Amersfoort → Ploiești",
             "start": start,
             "end": end,
@@ -277,7 +277,7 @@ def _render_mobile_romania_stage(
         </style>
 
         <div class="rm-head">
-          <div class="rm-protocol">{stage["title"]} • MOBILE BUILD 0.2.22</div>
+          <div class="rm-protocol">{stage["title"]}</div>
           <div class="rm-title">{headline}</div>
           <div class="rm-distance">{distance_value}</div>
           <div class="rm-caption">{distance_caption}</div>
@@ -751,7 +751,7 @@ def render_mission_map(
                     font-weight:800;
                     letter-spacing:.10em;
                 ">
-                    {stage["title"]} • BUILD 0.2.16
+                    {stage["title"]}
                 </div>
                 <div style="
                     color:white;
