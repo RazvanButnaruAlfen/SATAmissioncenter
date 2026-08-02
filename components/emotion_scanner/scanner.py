@@ -58,7 +58,14 @@ def render_emotion_scanner(state: MissionState) -> None:
         _show(overlay, "SCANARE FINALIZATĂ", "Rezultatul este pregătit. Telefonul poate fi mișcat din nou.", 100, detected=True, delay=RESULT_DELAY)
         overlay.empty()
 
-        title, text, score = choose_result(state.current_date, rng, RARE_RESULT_PROBABILITY)
+        previous_result = st.session_state.get("emos_last_result")
+        previous_title = previous_result[0] if previous_result else None
+        title, text, score = choose_result(
+            state.current_date,
+            rng,
+            RARE_RESULT_PROBABILITY,
+            previous_title=previous_title,
+        )
         record_emos_scan(
             score=score,
             title=title,
