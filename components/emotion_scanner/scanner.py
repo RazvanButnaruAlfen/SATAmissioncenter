@@ -7,6 +7,7 @@ import time
 import streamlit as st
 
 from core.mission_state import MissionState
+from core.sata_memory import record_emos_scan
 from .animation import overlay_html
 from .config import DETECTION_DELAY, RARE_RESULT_PROBABILITY, RESULT_DELAY, SCAN_STEP_DELAY
 from .messages import (
@@ -56,9 +57,12 @@ def render_emotion_scanner(state: MissionState) -> None:
         overlay.empty()
 
         title, text, score = choose_result(state.current_date, rng, RARE_RESULT_PROBABILITY)
-        st.session_state["emos_last_result"] = (title, text, score)
-        st.session_state["emos_last_score"] = score
-        st.session_state["emos_last_scan_date"] = state.current_date.isoformat()
+        record_emos_scan(
+            score=score,
+            title=title,
+            text=text,
+            scan_date=state.current_date.isoformat(),
+        )
 
     result = st.session_state.get("emos_last_result")
     if result:
