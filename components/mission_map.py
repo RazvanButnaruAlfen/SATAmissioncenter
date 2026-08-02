@@ -133,6 +133,344 @@ def _stage(state: MissionState):
     }
 
 
+def _render_mobile_romania_stage(
+    state: MissionState,
+    stage: dict,
+) -> None:
+    """Compact mobile layout for all Romania stages."""
+    razvan_uri = _image_data(AVATAR_DIR / "razvan_avatar.png")
+    alexandra_uri = _image_data(AVATAR_DIR / "alexandra_avatar.png")
+
+    start = stage["start"]
+    end = stage["end"]
+    is_stationary = start == end
+    vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
+
+    current_day = state.current_date.day
+
+    if state.current_date.month == 8 and current_day <= 11:
+        headline = "STAȚIONARE ÎN CLUJ-NAPOCA"
+        distance_value = "105 km"
+        distance_caption = "PÂNĂ LA URMĂTOAREA ETAPĂ"
+        route_status = "Răzvan rămâne în Cluj-Napoca"
+    elif state.current_date.month == 8 and current_day == 12:
+        headline = "CLUJ-NAPOCA → TÂRGU MUREȘ"
+        distance_value = f"{state.distance_km} km"
+        distance_caption = "DISTANȚĂ RUTIERĂ ESTIMATĂ"
+        route_status = "Deplasare activă"
+    elif state.current_date.month == 8 and current_day == 13:
+        headline = "STAȚIONARE ÎN TÂRGU MUREȘ"
+        distance_value = "330 km"
+        distance_caption = "PÂNĂ LA PLOIEȘTI"
+        route_status = "Ultima oprire înainte de Ploiești"
+    elif state.current_date.month == 8 and current_day == 14:
+        headline = "TÂRGU MUREȘ → PLOIEȘTI"
+        distance_value = "0 km"
+        distance_caption = "SOSIRE ÎN PLOIEȘTI"
+        route_status = "Contact în Ploiești"
+    else:
+        headline = "PLOIEȘTI → BRAȘOV"
+        distance_value = f"{max(0, round(110 * (1 - stage['progress'])))} km"
+        distance_caption = "DISTANȚĂ RUTIERĂ ESTIMATĂ"
+        route_status = "Deplasare împreună"
+
+    st.markdown(
+        f"""
+        <style>
+        .rm-head {{
+            background:#08131e;
+            border:1px solid #294454;
+            border-radius:16px 16px 0 0;
+            padding:17px 14px 14px;
+            text-align:center;
+            color:white;
+        }}
+        .rm-protocol {{
+            color:#63bdf4;
+            font-size:.75rem;
+            font-weight:900;
+            letter-spacing:.08em;
+        }}
+        .rm-title {{
+            font-size:clamp(1.25rem,6vw,1.75rem);
+            line-height:1.12;
+            font-weight:950;
+            margin-top:.45rem;
+            overflow-wrap:anywhere;
+        }}
+        .rm-distance {{
+            color:#f49ac2;
+            font-size:clamp(2.2rem,12vw,3.25rem);
+            line-height:1;
+            font-weight:950;
+            margin-top:.65rem;
+        }}
+        .rm-caption {{
+            color:#9fb1bf;
+            font-size:.72rem;
+            letter-spacing:.06em;
+            margin-top:.3rem;
+        }}
+        .rm-status {{
+            color:#ffd98d;
+            font-size:.82rem;
+            font-weight:800;
+            margin-top:.75rem;
+        }}
+        .rm-people {{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+            margin-top:10px;
+        }}
+        .rm-person {{
+            background:#0b1722;
+            border:1px solid #294454;
+            border-radius:14px;
+            padding:10px;
+            text-align:center;
+            color:white;
+        }}
+        .rm-avatar {{
+            width:72px;
+            height:72px;
+            object-fit:contain;
+        }}
+        .rm-name {{
+            font-size:1rem;
+            font-weight:950;
+            margin-top:3px;
+        }}
+        .rm-person.left .rm-name {{color:#59b9ff;}}
+        .rm-person.right .rm-name {{color:#ff82bf;}}
+        .rm-place {{
+            color:#b7c5cf;
+            font-size:.72rem;
+            line-height:1.25;
+            margin-top:2px;
+        }}
+        .rm-cards {{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+            margin-top:10px;
+        }}
+        .rm-card {{
+            background:#0b1722;
+            border:1px solid #294454;
+            border-radius:13px;
+            padding:11px;
+            min-width:0;
+        }}
+        .rm-label {{
+            color:#8195a4;
+            font-size:.68rem;
+            margin-bottom:4px;
+        }}
+        .rm-value {{
+            color:#f4f7fa;
+            font-size:.92rem;
+            font-weight:850;
+            line-height:1.25;
+            overflow-wrap:anywhere;
+        }}
+        </style>
+
+        <div class="rm-head">
+          <div class="rm-protocol">{stage["title"]} • MOBILE BUILD 0.2.22</div>
+          <div class="rm-title">{headline}</div>
+          <div class="rm-distance">{distance_value}</div>
+          <div class="rm-caption">{distance_caption}</div>
+          <div class="rm-status">{route_status}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    fig = go.Figure()
+
+    if is_stationary:
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0]],
+                lon=[start[1]],
+                mode="markers+text",
+                text=[stage["labels"][0][0]],
+                textposition="top right",
+                textfont=dict(size=14, color="#68c2ff"),
+                marker=dict(size=20, color="#36aef5"),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0]],
+                lon=[start[1]],
+                mode="text",
+                text=["📍"],
+                textfont=dict(size=28, color="#ffffff"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+    else:
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0], end[0]],
+                lon=[start[1], end[1]],
+                mode="lines",
+                line=dict(width=6, color="#334e63"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0], vehicle_lat],
+                lon=[start[1], vehicle_lon],
+                mode="lines",
+                line=dict(width=5, color="#36aef5"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[vehicle_lat, end[0]],
+                lon=[vehicle_lon, end[1]],
+                mode="lines",
+                line=dict(width=4, color="#ff70b8"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[start[0]],
+                lon=[start[1]],
+                mode="markers+text",
+                text=[stage["labels"][0][0]],
+                textposition="top left",
+                textfont=dict(size=13, color="#68c2ff"),
+                marker=dict(size=16, color="#36aef5"),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[end[0]],
+                lon=[end[1]],
+                mode="markers+text",
+                text=[stage["labels"][-1][0]],
+                textposition="bottom right",
+                textfont=dict(size=13, color="#ff8bc5"),
+                marker=dict(size=16, color="#ff70b8"),
+                hovertemplate="%{text}<extra></extra>",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[vehicle_lat],
+                lon=[vehicle_lon],
+                mode="text",
+                text=[stage["vehicle"]],
+                textfont=dict(size=30, color="#ffffff"),
+                hovertemplate=f"{stage['vehicle_name']}<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+    center_lat = (stage["lat_range"][0] + stage["lat_range"][1]) / 2
+    center_lon = (stage["lon_range"][0] + stage["lon_range"][1]) / 2
+
+    if state.current_date.month == 8 and current_day <= 11:
+        zoom = 6.6
+    elif state.current_date.month == 8 and current_day == 12:
+        zoom = 6.3
+    elif state.current_date.month == 8 and current_day == 13:
+        zoom = 6.6
+    elif state.current_date.month == 8 and current_day == 14:
+        zoom = 5.9
+    else:
+        zoom = 6.9
+
+    fig.update_layout(
+        height=330,
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor="#08131e",
+        plot_bgcolor="#08131e",
+        mapbox=dict(
+            style="open-street-map",
+            center=dict(lat=center_lat, lon=center_lon),
+            zoom=zoom,
+        ),
+        font=dict(family="Arial, sans-serif"),
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={
+            "displayModeBar": False,
+            "responsive": True,
+            "scrollZoom": True,
+        },
+    )
+
+    if state.current_date >= date(2026, 8, 15):
+        left_name = "RĂZVAN + ALEXANDRA"
+        left_place = "Plecarea împreună din Ploiești"
+        right_name = "DESTINAȚIE"
+        right_place = "Brașov"
+        right_image = alexandra_uri
+    else:
+        left_name = "RĂZVAN"
+        left_place = state.location
+        right_name = "ALEXANDRA"
+        right_place = "Ploiești"
+        right_image = alexandra_uri
+
+    st.markdown(
+        f"""
+        <div class="rm-people">
+          <div class="rm-person left">
+            <img class="rm-avatar" src="{razvan_uri}">
+            <div class="rm-name">{left_name}</div>
+            <div class="rm-place">{left_place}</div>
+          </div>
+          <div class="rm-person right">
+            <img class="rm-avatar" src="{right_image}">
+            <div class="rm-name">{right_name}</div>
+            <div class="rm-place">{right_place}</div>
+          </div>
+        </div>
+
+        <div class="rm-cards">
+          <div class="rm-card">
+            <div class="rm-label">Faza</div>
+            <div class="rm-value">{state.phase}</div>
+          </div>
+          <div class="rm-card">
+            <div class="rm-label">Localizare</div>
+            <div class="rm-value">{state.location}</div>
+          </div>
+          <div class="rm-card">
+            <div class="rm-label">Următorul punct</div>
+            <div class="rm-value">{state.next_target}</div>
+          </div>
+          <div class="rm-card">
+            <div class="rm-label">Zile rămase</div>
+            <div class="rm-value">{state.days_remaining}</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_mission_map(
     state: MissionState,
     is_mobile: bool | None = None,
@@ -141,6 +479,10 @@ def render_mission_map(
         is_mobile = bool(st.session_state.get("sata_is_mobile", False))
 
     stage = _stage(state)
+
+    if is_mobile and state.current_date >= date(2026, 8, 9):
+        _render_mobile_romania_stage(state, stage)
+        return
 
     # Responsive Europe layout: the title and avatars are outside Plotly,
     # so they can reflow cleanly on phones without clipping.
