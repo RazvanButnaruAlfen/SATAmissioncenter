@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.3.4 RC1 — Playable Release Candidate
+- Adăugat sistemul invizibil Recovered Packets.
+- Pachetele pot conține bancuri, fun facts, rețete, filme sau exerciții.
+- Șansa de interceptare crește discret după interacțiuni nereușite.
+- După suficiente interacțiuni, sistemul garantează o surpriză fără a dezvălui regula.
+- Pachetele nu se repetă în aceeași zi până la epuizarea listei.
+- Adăugat flux de decriptare manuală.
+- Activat modul Release: fără Development Build și controale responsive vizibile.
+
+# Changelog
+
+## 0.3.3 — Connected Systems
+- Adăugată memoria operațională comună S.A.T.A.
+- E.M.O.S. salvează scanarea în memoria comună.
+- Fricometrul transmite scorul și predicția către S.A.T.A.
+- Dosarele Clasificate folosesc un coeficient combinat E.M.O.S. + Fricometru.
+- Încercările și documentele deblocate sunt memorate central.
+- Adăugat panoul de sincronizare dintre instrumente.
+- Laboratorul afișează instrumentele conectate.
+
+# Changelog
+
+## 0.3.2
+- Rebuilt E.M.O.S. overlay as compact, single-line HTML.
+- Removed all Markdown-sensitive indentation and blank lines.
+- Fixed raw HTML fragments appearing during scan progress below 58%.
+- Added progress clamping, escaped text, and smoother bar transitions.
+
 ## 0.3.0 Foundation Build
 - E.M.O.S. migrated from a single file to a modular package.
 - Added fullscreen blue pulse, pink target-acquired pulse, scan line and staged scan sequence.
