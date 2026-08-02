@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
 
+from core.app_config import SHOW_RESPONSIVE_DEBUG
+
 
 MOBILE_BREAKPOINT = 768
 
@@ -17,12 +19,6 @@ class DeviceInfo:
 
 
 def detect_device() -> DeviceInfo:
-    """Read the browser viewport width once per Streamlit rerun.
-
-    The JavaScript component must be called at top level, not inside
-    an if/else branch. On its first render it may temporarily return
-    None; in that case we safely use the desktop layout.
-    """
     width = streamlit_js_eval(
         js_expressions="window.innerWidth",
         want_output=True,
@@ -34,40 +30,38 @@ def detect_device() -> DeviceInfo:
     except (TypeError, ValueError):
         normalized_width = None
 
-    detected_mobile = (
+    is_mobile = (
         normalized_width is not None
         and normalized_width < MOBILE_BREAKPOINT
     )
 
-    with st.sidebar:
-        st.divider()
-        st.caption("Responsive development controls")
-        override = st.selectbox(
-            "Layout preview",
-            options=["Automat", "Desktop", "Telefon"],
-            index=0,
-            help=(
-                "Automat folosește lățimea reală a browserului. "
-                "Opțiunile Desktop și Telefon sunt utile pentru testare."
-            ),
-        )
+    if SHOW_RESPONSIVE_DEBUG:
+        with st.sidebar:
+            st.divider()
+            st.caption("Responsive development controls")
+            override = st.selectbox(
+                "Layout preview",
+                options=["Automat", "Desktop", "Telefon"],
+                index=0,
+            )
 
-        if override == "Telefon":
-            is_mobile = True
-        elif override == "Desktop":
-            is_mobile = False
-        else:
-            is_mobile = detected_mobile
+            if override == "Telefon":
+                is_mobile = True
+            elif override == "Desktop":
+                is_mobile = False
 
-        if normalized_width is None:
-            st.caption("Lățime browser: în curs de detectare")
-        else:
-            st.caption(f"Lățime browser detectată: {normalized_width}px")
-
-        st.caption(
-            "Layout activ: "
-            + ("Telefon" if is_mobile else "Desktop")
-        )
+            st.caption(
+                "Lățime browser: "
+                + (
+                    "în curs de detectare"
+                    if normalized_width is None
+                    else f"{normalized_width}px"
+                )
+            )
+            st.caption(
+                "Layout activ: "
+                + ("Telefon" if is_mobile else "Desktop")
+            )
 
     return DeviceInfo(
         width=normalized_width,
