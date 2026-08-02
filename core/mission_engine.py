@@ -5,6 +5,7 @@ import streamlit as st
 from core.date_logic import ROMANIA_ARRIVAL, PLOIESTI_ARRIVAL, BRASOV_START, BRASOV_END
 from core.distance import interpolate_distance
 from core.mission_state import MissionState
+from core.app_config import RELEASE_MODE
 
 START_DATE = date(2026, 7, 31)
 START_DISTANCE_KM = 1984
@@ -13,13 +14,17 @@ def _today_in_romania() -> date:
     return datetime.now(ZoneInfo("Europe/Bucharest")).date()
 
 def get_mission_state() -> MissionState:
-    with st.sidebar:
-        st.subheader("Development controls")
-        test_mode = st.toggle("Mod testare dată", value=True)
-        current_date = (
-            st.date_input("Data simulată", value=_today_in_romania())
-            if test_mode else _today_in_romania()
-        )
+    current_date = _today_in_romania()
+
+    if not RELEASE_MODE:
+        with st.sidebar:
+            st.subheader("Development controls")
+            test_mode = st.toggle("Mod testare dată", value=True)
+            current_date = (
+                st.date_input("Data simulată", value=current_date)
+                if test_mode
+                else current_date
+            )
 
     if current_date < ROMANIA_ARRIVAL:
         # Până pe 8 august nu există deplasare fizică.
