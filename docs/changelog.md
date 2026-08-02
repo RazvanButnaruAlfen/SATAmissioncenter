@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.2 — Living Message Panels
+- Buletinul operativ se schimbă la fiecare sesiune.
+- Expresia probabilă și procentul sunt variabile.
+- Indicatorii primesc variații mici, păstrând etapa misiunii.
+- Recomandarea zilei este aleasă din 15 variante.
+- Adăugat Rezumatul S.A.T.A. cu 12 concluzii posibile.
+- Zilele importante au câte trei buletine tematice.
+- Mesajele rămân stabile pe durata clickurilor din aceeași sesiune.
+- Este evitată repetarea imediată între sesiuni.
+
+# Changelog
+
+## 0.4.1 — Dynamic S.A.T.A. Quotes
+- Adăugate 30 de mesaje generale S.A.T.A.
+- Adăugate mesaje tematice pentru zilele importante ale misiunii.
+- Mesajul este ales aleator la deschiderea unei sesiuni.
+- Mesajul rămâne stabil în timpul clickurilor și rerun-urilor Streamlit.
+- Este evitată repetarea imediată a ultimului mesaj în aceeași sesiune.
+
+# Changelog
+
 ## 0.4.0 — Recovered Packets v1
 - Modularizat complet subsistemul Recovered Packets.
 - Adăugate bancuri, fun facts, rețete, filme și mini-antrenamente.
