@@ -11,6 +11,7 @@ from components.lab_launcher import render_lab_launcher
 from components.emotion_scanner import render_emotion_scanner
 from components.classified_archives import render_classified_archives
 from components.system_status import render_system_status
+from components.sata_events import render_sata_events
 from core.mission_engine import get_mission_state
 from core.app_config import APP_ICON, APP_TITLE
 
@@ -29,6 +30,7 @@ render_timeline(state)
 render_cards(state)
 render_funny_panel(state)
 render_knowledge_panel(state)
+render_sata_events(state.current_date)
 render_emotion_scanner(state)
 render_system_status()
 render_classified_archives(state)

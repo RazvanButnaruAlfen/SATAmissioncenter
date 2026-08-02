@@ -2,3 +2,4 @@ streamlit>=1.39
 Pillow>=10.0
 plotly>=5.24
 streamlit-js-eval==1.0.0
+streamlit-autorefresh==1.0.1
