@@ -8,6 +8,7 @@ import streamlit as st
 from core.mission_state import MissionState
 from core.sata_memory import (
     combined_longing_score,
+    has_completed_emos_scan,
     record_archive_unlock,
     register_archive_attempt,
 )
@@ -24,6 +25,15 @@ def _rng(state: MissionState, attempts: int) -> random.Random:
 
 def render_classified_archives(state: MissionState) -> None:
     render_header()
+
+    # Remove an old "scan required" refusal once E.M.O.S. has subsequently run.
+    previous_denial = st.session_state.get("archive_denial")
+    if (
+        previous_denial
+        and has_completed_emos_scan()
+        and "scanare E.M.O.S." in str(previous_denial[0])
+    ):
+        st.session_state["archive_denial"] = None
 
     if st.button("🔒 SOLICITĂ ACCES", use_container_width=True, key="archive_access"):
         attempts = register_archive_attempt()

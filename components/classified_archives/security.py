@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import random
 
 from .config import MIN_LONGING_FOR_ACCESS, RANDOM_UNLOCK_PROBABILITY
-from core.sata_memory import combined_longing_score
+from core.sata_memory import combined_longing_score, has_completed_emos_scan
 
 
 @dataclass(frozen=True)
@@ -22,8 +22,19 @@ def check_access(score: int | None, rng: random.Random) -> AccessDecision:
     if shared_score is not None:
         score = shared_score
 
+    if not has_completed_emos_scan():
+        return AccessDecision(
+            False,
+            None,
+            "Nu există încă o scanare E.M.O.S. în memoria sistemului.",
+        )
+
     if score is None:
-        return AccessDecision(False, None, "Nu există o scanare E.M.O.S. validă în memoria sistemului.")
+        return AccessDecision(
+            False,
+            None,
+            "Scanarea E.M.O.S. a fost recepționată, dar coeficientul numeric este temporar indisponibil.",
+        )
     if score >= MIN_LONGING_FOR_ACCESS and rng.random() < RANDOM_UNLOCK_PROBABILITY:
         return AccessDecision(True, score, "Coeficientul emoțional a depășit accidental toate barierele de securitate.")
     if score < MIN_LONGING_FOR_ACCESS:
