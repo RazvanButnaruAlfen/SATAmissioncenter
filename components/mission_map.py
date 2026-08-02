@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 import base64
 from pathlib import Path
 
@@ -41,7 +42,7 @@ def _stage(state: MissionState):
         end = LOCATIONS["ploiesti"]
         progress = max(0.0, min(1.0, state.progress_percent / 45))
         return {
-            "title": "PROTOCOL EUROPA • BUILD 0.2.15",
+            "title": "PROTOCOL EUROPA • BUILD 0.2.19",
             "subtitle": "Amersfoort → Ploiești",
             "start": start,
             "end": end,
@@ -134,6 +135,236 @@ def _stage(state: MissionState):
 
 def render_mission_map(state: MissionState) -> None:
     stage = _stage(state)
+
+    # Responsive Europe layout: the title and avatars are outside Plotly,
+    # so they can reflow cleanly on phones without clipping.
+    if state.current_date < date(2026, 8, 9):
+        start = stage["start"]
+        end = stage["end"]
+        vehicle_lat, vehicle_lon = start
+
+        razvan_uri = _image_data(AVATAR_DIR / "razvan_avatar.png")
+        alexandra_uri = _image_data(AVATAR_DIR / "alexandra_avatar.png")
+
+        st.markdown(
+            f"""
+            <style>
+            .eu-shell {{
+                background:#08131e;
+                border:1px solid #294454;
+                border-radius:18px 18px 0 0;
+                padding:20px 22px 16px;
+                text-align:center;
+                color:white;
+            }}
+            .eu-protocol {{
+                color:#63bdf4;
+                font-size:clamp(.78rem,2.8vw,.95rem);
+                font-weight:900;
+                letter-spacing:.10em;
+            }}
+            .eu-title {{
+                font-size:clamp(1.45rem,5.4vw,2.35rem);
+                line-height:1.08;
+                font-weight:950;
+                margin-top:.5rem;
+                overflow-wrap:anywhere;
+            }}
+            .eu-distance {{
+                color:#f49ac2;
+                font-size:clamp(2.6rem,10vw,4rem);
+                line-height:1;
+                font-weight:950;
+                margin-top:.75rem;
+            }}
+            .eu-caption {{
+                color:#9fb1bf;
+                font-size:clamp(.72rem,2.8vw,.9rem);
+                letter-spacing:.06em;
+                margin-top:.35rem;
+            }}
+            .eu-countdown {{
+                margin-top:.8rem;
+                color:#ffd98d;
+                font-size:clamp(.82rem,3vw,1rem);
+                font-weight:800;
+            }}
+            .eu-avatars {{
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:12px;
+                margin-top:12px;
+            }}
+            .eu-person {{
+                background:#0b1722;
+                border:1px solid #294454;
+                border-radius:15px;
+                padding:12px;
+                text-align:center;
+                min-width:0;
+            }}
+            .eu-avatar {{
+                width:clamp(76px,18vw,118px);
+                height:clamp(76px,18vw,118px);
+                object-fit:contain;
+            }}
+            .eu-name {{
+                font-size:clamp(1rem,4vw,1.35rem);
+                font-weight:950;
+                margin-top:5px;
+            }}
+            .eu-person.left .eu-name {{color:#59b9ff;}}
+            .eu-person.right .eu-name {{color:#ff82bf;}}
+            .eu-place {{
+                color:#b7c5cf;
+                font-size:clamp(.72rem,2.8vw,.88rem);
+                margin-top:3px;
+                overflow-wrap:anywhere;
+            }}
+            @media(max-width:420px) {{
+                .eu-shell {{padding:17px 12px 13px;}}
+                .eu-avatars {{grid-template-columns:1fr;}}
+                .eu-person {{
+                    display:grid;
+                    grid-template-columns:82px 1fr;
+                    text-align:left;
+                    align-items:center;
+                    column-gap:12px;
+                }}
+                .eu-avatar {{width:78px;height:78px;grid-row:1 / span 2;}}
+                .eu-name {{margin-top:0;}}
+            }}
+            </style>
+
+            <div class="eu-shell">
+              <div class="eu-protocol">{stage["title"]}</div>
+              <div class="eu-title">MISIUNEA: APROPIERE EMOȚIONALĂ</div>
+              <div class="eu-distance">{state.distance_km} km</div>
+              <div class="eu-caption">DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</div>
+              <div class="eu-countdown">
+                ZBORUL NU A ÎNCEPUT • {state.days_remaining} ZILE PÂNĂ LA ROMÂNIA
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        fig = go.Figure()
+
+        # Static route before the actual flight.
+        fig.add_trace(
+            go.Scattergeo(
+                lat=[start[0], end[0]],
+                lon=[start[1], end[1]],
+                mode="lines",
+                line=dict(width=4, color="#ff70b8", dash="dot"),
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+        # Separate city markers avoid text-position issues.
+        fig.add_trace(
+            go.Scattergeo(
+                lat=[start[0]],
+                lon=[start[1]],
+                mode="markers+text",
+                text=["Amersfoort"],
+                textposition="top left",
+                textfont=dict(size=14, color="#68c2ff"),
+                marker=dict(size=15, color="#35aef5", line=dict(width=3, color="#eef8ff")),
+                hovertemplate="Amersfoort<extra></extra>",
+                showlegend=False,
+            )
+        )
+        fig.add_trace(
+            go.Scattergeo(
+                lat=[end[0]],
+                lon=[end[1]],
+                mode="markers+text",
+                text=["Ploiești"],
+                textposition="bottom right",
+                textfont=dict(size=14, color="#ff8bc5"),
+                marker=dict(size=15, color="#ff70b8", line=dict(width=3, color="#eef8ff")),
+                hovertemplate="Ploiești<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        # Plane stays at Amersfoort until 9 August.
+        fig.add_trace(
+            go.Scattergeo(
+                lat=[vehicle_lat],
+                lon=[vehicle_lon],
+                mode="text",
+                text=["✈"],
+                textfont=dict(size=32, color="#ffffff"),
+                hovertemplate="Zborul nu a început<extra></extra>",
+                showlegend=False,
+            )
+        )
+
+        fig.update_geos(
+            projection_type="mercator",
+            showland=True,
+            landcolor="#0d2233",
+            showocean=True,
+            oceancolor="#07131e",
+            showlakes=True,
+            lakecolor="#07131e",
+            showcountries=True,
+            countrycolor="#34749d",
+            countrywidth=1.0,
+            showcoastlines=True,
+            coastlinecolor="#34749d",
+            coastlinewidth=1.1,
+            showframe=False,
+            bgcolor="rgba(0,0,0,0)",
+            lataxis_range=[41, 57],
+            lonaxis_range=[-2, 31],
+            resolution=50,
+        )
+
+        fig.update_layout(
+            height=470,
+            margin=dict(l=0, r=0, t=0, b=0),
+            paper_bgcolor="#08131e",
+            plot_bgcolor="#08131e",
+            font=dict(family="Arial, sans-serif"),
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+            config={
+                "displayModeBar": False,
+                "responsive": True,
+                "scrollZoom": False,
+            },
+        )
+
+        st.markdown(
+            f"""
+            <div class="eu-avatars">
+              <div class="eu-person left">
+                <img class="eu-avatar" src="{razvan_uri}">
+                <div class="eu-name">RĂZVAN</div>
+                <div class="eu-place">Amersfoort, Olanda</div>
+              </div>
+              <div class="eu-person right">
+                <img class="eu-avatar" src="{alexandra_uri}">
+                <div class="eu-name">ALEXANDRA</div>
+                <div class="eu-place">Ploiești, România</div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        c1, c2 = st.columns(2)
+        c1.metric("Stare", "Așteptare plecare")
+        c2.metric("Următorul eveniment", f"România în {state.days_remaining} zile")
+        return
 
     # Detailed itinerary in Romania: Cluj, Târgu Mureș, then Ploiești.
     if state.current_date.month == 8 and 9 <= state.current_date.day <= 14:
