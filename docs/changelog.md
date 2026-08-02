@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 RC1 — S.A.T.A. Event Engine
+- Adăugat motor unic pentru evenimente active și pasive.
+- Acțiunile importante au aproximativ 20% șansă de surpriză.
+- După minimum 45 de secunde în aplicație pot apărea intervenții spontane.
+- Verificarea pasivă rulează discret la fiecare 30 de secunde.
+- Adăugat cooldown de 75 de secunde între evenimente.
+- Maximum patru intervenții într-o sesiune.
+- Evenimentele pot fi pachete recuperate sau micro-mesaje S.A.T.A.
+- Adăugate zece micro-evenimente originale.
+- E.M.O.S. notifică acum motorul central, nu gestionează direct recompensele.
+
+# Changelog
+
 ## 0.4.2 — Living Message Panels
 - Buletinul operativ se schimbă la fiecare sesiune.
 - Expresia probabilă și procentul sunt variabile.
