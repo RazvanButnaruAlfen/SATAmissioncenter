@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1 RC2 — Release Interface
+- Eliminată navigarea automată Streamlit din sidebar.
+- Ascunse controalele pentru simularea datei în Release Mode.
+- Eliminat badge-ul TOP SECRET • DEV.
+- Eliminat textul DEVELOPMENT BUILD din header și footer.
+- Eliminate numerele build-urilor din hărți.
+- Adăugat badge-ul neutru MISIUNE ACTIVĂ.
+- Instrumentele de testare rămân disponibile când RELEASE_MODE este False.
+
+# Changelog
+
 ## 0.5.0 RC1 — S.A.T.A. Event Engine
 - Adăugat motor unic pentru evenimente active și pasive.
 - Acțiunile importante au aproximativ 20% șansă de surpriză.
