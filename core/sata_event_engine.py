@@ -44,7 +44,7 @@ MICRO_EVENTS = [
     },
     {
         "title": "FALSĂ ALARMĂ",
-        "text": "Un pachet necunoscut a intrat în raza satelitului. S-a dovedit a fi o reclamă la detergent.",
+        "text": "Un pachet necunoscut a intrat în raza de recepție a satelitului. S-a dovedit a fi o reclamă la detergent.",
         "icon": "⚠️",
     },
     {
@@ -59,7 +59,7 @@ MICRO_EVENTS = [
     },
     {
         "title": "ACTIVITATE SUSPECTĂ",
-        "text": "Telefonul pare să fie ținut în mână. Sistemul refuză să tragă concluzii pripite. Pentru moment.",
+        "text": "Telefonul pare să fie ținut în mână. Sistemul refuză, pentru moment, să tragă concluzii pripite.",
         "icon": "📱",
     },
     {
