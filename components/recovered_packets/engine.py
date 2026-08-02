@@ -19,6 +19,7 @@ def register_action(
     today: date,
     trigger: str,
     rng: random.Random | None = None,
+    force_drop: bool = False,
 ) -> RecoveredPacket | None:
     existing = pending_packet(today)
     if existing is not None:
@@ -29,7 +30,11 @@ def register_action(
 
     # Invisible soft-pity system: the chance grows after every action.
     probability = min(0.74, 0.045 + max(0, attempts - 1) * 0.07)
-    should_drop = attempts >= 10 or random_source.random() < probability
+    should_drop = (
+        force_drop
+        or attempts >= 10
+        or random_source.random() < probability
+    )
 
     if not should_drop:
         return None
