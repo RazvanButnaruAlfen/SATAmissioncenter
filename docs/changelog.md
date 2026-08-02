@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.3 RC4 — Plotly Route Fix
+- Eliminată proprietatea neacceptată `dash` din Scattermapbox.
+- Ruta punctată Europa este construită acum din segmente separate.
+- Păstrat aspectul vizual al traseului fără eroare ValueError.
+
+# Changelog
+
 ## 0.5.2 RC3 — Secret Map Restoration
 - Restaurat badge-ul TOP SECRET în versiunea Release, fără marcajul DEV.
 - Harta Europei ocupă din nou întregul fundal al panoului.
