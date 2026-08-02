@@ -18,8 +18,9 @@ st.set_page_config(
 
 device = detect_device()
 state = get_mission_state()
+st.session_state["sata_is_mobile"] = device.is_mobile
 render_header()
-render_mission_map(state, is_mobile=device.is_mobile)
+render_mission_map(state)
 render_timeline(state)
 render_cards(state)
 render_funny_panel(state)
