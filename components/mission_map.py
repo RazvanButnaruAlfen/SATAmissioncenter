@@ -42,7 +42,7 @@ def _stage(state: MissionState):
         end = LOCATIONS["ploiesti"]
         progress = max(0.0, min(1.0, state.progress_percent / 45))
         return {
-            "title": "PROTOCOL EUROPA • BUILD 0.2.19",
+            "title": "PROTOCOL EUROPA • BUILD 0.2.21",
             "subtitle": "Amersfoort → Ploiești",
             "start": start,
             "end": end,
@@ -133,12 +133,18 @@ def _stage(state: MissionState):
     }
 
 
-def render_mission_map(state: MissionState) -> None:
+def render_mission_map(
+    state: MissionState,
+    is_mobile: bool | None = None,
+) -> None:
+    if is_mobile is None:
+        is_mobile = bool(st.session_state.get("sata_is_mobile", False))
+
     stage = _stage(state)
 
     # Responsive Europe layout: the title and avatars are outside Plotly,
     # so they can reflow cleanly on phones without clipping.
-    if state.current_date < date(2026, 8, 9):
+    if is_mobile and state.current_date < date(2026, 8, 9):
         start = stage["start"]
         end = stage["end"]
         vehicle_lat, vehicle_lon = start
@@ -191,7 +197,7 @@ def render_mission_map(state: MissionState) -> None:
             }}
             .eu-avatars {{
                 display:grid;
-                grid-template-columns:1fr 1fr;
+                grid-template-columns:repeat(2,minmax(0,1fr));
                 gap:12px;
                 margin-top:12px;
             }}
@@ -326,7 +332,7 @@ def render_mission_map(state: MissionState) -> None:
         )
 
         fig.update_layout(
-            height=470,
+            height=360,
             margin=dict(l=0, r=0, t=0, b=0),
             paper_bgcolor="#08131e",
             plot_bgcolor="#08131e",
