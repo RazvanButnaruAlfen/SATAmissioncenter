@@ -13,13 +13,40 @@ from components.classified_archives import render_classified_archives
 from components.system_status import render_system_status
 from components.sata_events import render_sata_events
 from core.mission_engine import get_mission_state
-from core.app_config import APP_ICON, APP_TITLE
+from core.app_config import APP_ICON, APP_TITLE, RELEASE_MODE
 
 st.set_page_config(
     page_title=APP_TITLE,
     page_icon=APP_ICON,
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
+
+if RELEASE_MODE:
+    st.markdown(
+        """
+        <style>
+        /* Release shell: remove Streamlit's page navigation and sidebar. */
+        [data-testid="stSidebar"],
+        [data-testid="collapsedControl"],
+        button[kind="headerNoPadding"] {
+            display: none !important;
+        }
+
+        /* Remove the empty space left by the hidden sidebar. */
+        [data-testid="stAppViewContainer"] > .main {
+            margin-left: 0 !important;
+        }
+
+        /* Keep the release centered and visually clean. */
+        .block-container {
+            max-width: 1280px;
+            padding-top: 1.2rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 device = detect_device()
 state = get_mission_state()
