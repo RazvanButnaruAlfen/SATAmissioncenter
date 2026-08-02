@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.6 RC3 — Dynamic Scan Results
+- Recomandarea Dosarelor Clasificate este acum contextuală.
+- După o scanare, sistemul confirmă explicit că datele E.M.O.S. au fost recepționate.
+- Pragul și diferența până la acces sunt afișate clar.
+- O nouă scanare nu mai este prezentată ca obligatorie.
+- Fiecare profil E.M.O.S. folosește o plajă de scoruri, nu o valoare fixă.
+- Rezultatul imediat anterior este exclus din selecția următoare.
+- Adăugate profiluri și observații noi pentru variație.
+
+# Changelog
+
 ## 0.3.5 RC2 — E.M.O.S. Memory Fix
 - Separată existența scanării de existența unui scor numeric.
 - Rezultatele rare cu scor «???» sunt recunoscute drept scanări finalizate.
