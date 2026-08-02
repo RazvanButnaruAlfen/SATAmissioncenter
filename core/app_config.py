@@ -1,0 +1,7 @@
+APP_VERSION = "0.3.4 RC1"
+RELEASE_MODE = True
+SHOW_BUILD_MARKERS = False
+SHOW_RESPONSIVE_DEBUG = False
+
+APP_TITLE = "S.A.T.A. Mission Center"
+APP_ICON = "📡"
