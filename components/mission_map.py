@@ -1277,28 +1277,57 @@ def render_mission_map(
             center=dict(lat=48.6, lon=14.5),
             zoom=3.35,
         ),
-        annotations=[
-            # Dark translucent title plate over the map.
+        shapes=[
+            # One stable background plate; each text line is positioned separately.
             dict(
-                x=0.5, y=0.985, xref="paper", yref="paper",
-                text=(
-                    "<span style='font-size:14px;color:#63bdf4'>"
-                    f"<b>{stage['title']}</b></span><br>"
-                    "<span style='font-size:29px;color:white'>"
-                    "<b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span><br>"
-                    "<span style='font-size:45px;color:#f49ac2'>"
-                    f"<b>{state.distance_km} km</b></span><br>"
-                    "<span style='font-size:13px;color:#b6c5cf'>"
-                    "DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>"
-                ),
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.24,
+                x1=0.76,
+                y0=0.835,
+                y1=0.99,
+                fillcolor="rgba(4,15,24,.82)",
+                line=dict(color="rgba(52,116,157,.50)", width=1),
+                layer="above",
+            ),
+        ],
+        annotations=[
+            dict(
+                x=0.5, y=0.968, xref="paper", yref="paper",
+                text=f"<b>{stage['title']}</b>",
                 showarrow=False,
                 xanchor="center",
-                yanchor="top",
+                yanchor="middle",
                 align="center",
-                bgcolor="rgba(4,15,24,.78)",
-                bordercolor="rgba(52,116,157,.45)",
-                borderwidth=1,
-                borderpad=12,
+                font=dict(size=13, color="#63bdf4"),
+            ),
+            dict(
+                x=0.5, y=0.925, xref="paper", yref="paper",
+                text="<b>MISIUNEA: APROPIERE EMOȚIONALĂ</b>",
+                showarrow=False,
+                xanchor="center",
+                yanchor="middle",
+                align="center",
+                font=dict(size=27, color="#ffffff"),
+            ),
+            dict(
+                x=0.5, y=0.875, xref="paper", yref="paper",
+                text=f"<b>{state.distance_km} km</b>",
+                showarrow=False,
+                xanchor="center",
+                yanchor="middle",
+                align="center",
+                font=dict(size=43, color="#f49ac2"),
+            ),
+            dict(
+                x=0.5, y=0.842, xref="paper", yref="paper",
+                text="DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ",
+                showarrow=False,
+                xanchor="center",
+                yanchor="middle",
+                align="center",
+                font=dict(size=12, color="#b6c5cf"),
             ),
             dict(
                 x=0.02, y=0.035, xref="paper", yref="paper",
