@@ -17,7 +17,7 @@ def render_header() -> None:
         <div class="emos-panel">
           <div class="emos-kicker">INSTRUMENT EXPERIMENTAL • E.M.O.S.</div>
           <div class="emos-title">🛰 Scanează starea actuală a Alexandrei</div>
-          <div class="emos-copy">Sistem orbital de monitorizare emoțională, bazat pe sateliți imaginari și o încredere complet nejustificată.</div>
+          <div class="emos-copy">Sistem orbital de monitorizare emoțională, bazat pe sateliți imaginari și pe o încredere complet nejustificată.</div>
           <div class="emos-status">● SISTEM ONLINE</div>
         </div>
         """,
@@ -40,12 +40,12 @@ def render_result(title: str, text: str, score: int | None) -> None:
         .emos-result-foot{{margin-top:1rem;color:#7f95a4;font-size:.75rem}}
         </style>
         <div class="emos-result">
-          <div class="emos-result-label">REZULTAT SCANARE</div>
+          <div class="emos-result-label">REZULTATUL SCANĂRII</div>
           <div class="emos-result-title">{title}</div>
           <div class="emos-result-score">{value}</div>
           <div class="emos-result-caption">{caption}</div>
           <div class="emos-result-text">{text}</div>
-          <div class="emos-result-foot">S.A.T.A. este foarte încrezător. Rareori sigur.</div>
+          <div class="emos-result-foot">S.A.T.A. afișează multă încredere. Dovezile rămân în curs de procesare.</div>
         </div>
         """,
         unsafe_allow_html=True,

@@ -21,8 +21,8 @@ EUROPE_RESULTS = [
         "score_range": (41, 53),
     },
     {
-        "title": "CURIOSITATE CONTROLATĂ",
-        "text": "Subiectul pare calm, dar algoritmul a detectat o atenție neobișnuită acordată apropierii misiunii.",
+        "title": "CURIOZITATE CONTROLATĂ",
+        "text": "Subiectul pare calm, însă algoritmul a detectat un interes neobișnuit față de apropierea momentului întâlnirii.",
         "score_range": (39, 55),
     },
 ]
@@ -30,7 +30,7 @@ EUROPE_RESULTS = [
 ROMANIA_RESULTS = [
     {
         "title": "PRECIZIE CRESCUTĂ",
-        "text": "Răzvan se află în aceeași țară. România a devenit brusc prea mică pentru confortul algoritmilor.",
+        "text": "Răzvan se află acum în aceeași țară. România a devenit brusc prea mică pentru confortul algoritmilor.",
         "score_range": (62, 72),
     },
     {
@@ -63,7 +63,7 @@ PLOIESTI_RESULTS = [
     },
     {
         "title": "ANALIZĂ INSTABILĂ",
-        "text": "Alexandra este prea aproape pentru o analiză obiectivă. Se recomandă observație directă.",
+        "text": "Alexandra este prea aproape pentru o analiză obiectivă. Se recomandă observarea directă.",
         "score_range": (86, 95),
     },
     {
@@ -107,7 +107,7 @@ OBSERVATIONS = [
     "Marja de eroare rămâne clasificată.",
     "S.A.T.A. recomandă să nu se tragă concluzii pripite, apoi trage una oricum.",
     "Rezultatul diferă ușor de scanarea precedentă. Sistemul consideră acest lucru foarte științific.",
-    "Semnalul a fluctuat în limite considerate convenabile de algoritm.",
+    "Semnalul a fluctuat în limite pe care algoritmul a decis, în mod convenabil, să le considere normale.",
     "Precizia estimată este ridicată. Precizia reală nu a fost invitată la ședință.",
 ]
 
