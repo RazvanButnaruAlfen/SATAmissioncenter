@@ -17,11 +17,11 @@ def render_lab_launcher() -> None:
       <div class="lab-title">LABORATOR S.A.T.A. • INSTRUMENTE EXPERIMENTALE</div>
       <div class="lab-grid">
         <div class="lab-card"><div class="lab-name">📈 FRICOMETRU.EXE</div>
-        <div class="lab-status">Status: <span class="ok">OPERAȚIONAL</span><br>Acuratețe imposibil de demonstrat.</div></div>
+        <div class="lab-status">Status: <span class="ok">OPERAȚIONAL • CONECTAT</span><br>Trimite date către memoria S.A.T.A.</div></div>
         <div class="lab-card"><div class="lab-name">🧪 SIMULATOR PANICĂ</div>
         <div class="lab-status">Status: <span class="soon">ÎN DEZVOLTARE</span></div></div>
-        <div class="lab-card"><div class="lab-name">🔍 DETECTOR NEGARE</div>
-        <div class="lab-status">Status: <span class="soon">NECESITĂ CALIBRARE</span></div></div>
+        <div class="lab-card"><div class="lab-name">🔒 DOSARE CLASIFICATE</div>
+        <div class="lab-status">Status: <span class="ok">CONECTAT LA E.M.O.S.</span></div></div>
       </div>
     </div>
     """, unsafe_allow_html=True)
