@@ -5,6 +5,8 @@ from components.timeline import render_timeline
 from components.cards import render_cards
 from components.footer import render_footer
 from components.funny_panel import render_funny_panel
+from components.knowledge_panel import render_knowledge_panel
+from components.lab_launcher import render_lab_launcher
 from core.mission_engine import get_mission_state
 
 st.set_page_config(
@@ -19,4 +21,6 @@ render_mission_map(state)
 render_timeline(state)
 render_cards(state)
 render_funny_panel(state)
+render_knowledge_panel(state)
+render_lab_launcher()
 render_footer()
