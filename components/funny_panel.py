@@ -25,7 +25,7 @@ GENERAL_MESSAGES = [
 
 PHRASE_PROBABILITIES = [
     ("„Vedem.”", (84, 96), "Traducere estimată: există deja cel puțin trei scenarii."),
-    ("„Nu sunt stresată.”", (90, 99), "Credibilitate estimată de sistem: foarte creativă."),
+    ("„Nu sunt stresată.”", (90, 99), "Evaluarea credibilității: foarte creativă."),
     ("„Lasă...”", (76, 91), "S.A.T.A. recomandă să nu insiste nimeni."),
     ("„Nu contează.”", (86, 97), "Evaluare internă: probabil contează."),
     ("„Mai vorbim.”", (74, 90), "Subiectul rămâne deschis și monitorizat."),
@@ -34,11 +34,11 @@ PHRASE_PROBABILITIES = [
 ]
 
 RECOMMENDATIONS = [
-    "Respirația rămâne o funcție recomandată de sistem.",
+    "Respirația rămâne o funcție recomandată de S.A.T.A.",
     "Telefonul nu răspunde mai repede dacă este privit continuu.",
     "Nu toate momentele importante trebuie planificate.",
     "Păstrați nivelul de panică sub 80%. Restul este negociabil.",
-    "Sistemul recomandă mai puține scenarii și mai multă realitate.",
+    "Sistemul recomandă mai puține scenarii imaginare și mai mult contact cu realitatea.",
     "Nu există niciun cronometru. S.A.T.A. a verificat de două ori.",
     "Weekendul nu are obiective obligatorii. Doar posibilități.",
     "Dacă planul se schimbă, aplicația va pretinde că a prevăzut asta.",
@@ -60,7 +60,7 @@ SUMMARIES = [
     "Nivelul general este pozitiv. Nivelul de supra-analiză rămâne impresionant.",
     "Toate drumurile duc spre România. Unele gânduri au ajuns deja.",
     "Concluzie provizorie: mai puțină panică, mai multe momente bune.",
-    "Sistemul nu poate prezice finalul. Consideră aceasta o îmbunătățire.",
+    "Sistemul nu poate prezice finalul. Consideră acest lucru o îmbunătățire.",
     "Distanța există. Conexiunea pare să o ignore.",
     "Raportul confirmă apropierea. Departamentul de obiectivitate nu a participat.",
     "Totul pare suspect de promițător.",
@@ -271,15 +271,15 @@ def render_funny_panel(state: MissionState) -> None:
             <div class="funny-main">{bulletin_text}</div>
             <div class="indicator-grid">
               <div class="indicator-card">
-                <div class="indicator-label">Probabilitate panică</div>
+                <div class="indicator-label">Probabilitate de panică</div>
                 <div class="indicator-value">{panic}%</div>
               </div>
               <div class="indicator-card">
-                <div class="indicator-label">Nivel negare</div>
+                <div class="indicator-label">Nivel de negare</div>
                 <div class="indicator-value">{denial}%</div>
               </div>
               <div class="indicator-card">
-                <div class="indicator-label">Verificări telefon estimate</div>
+                <div class="indicator-label">Verificări estimate ale telefonului</div>
                 <div class="indicator-value">{phone_checks}/oră</div>
               </div>
             </div>
