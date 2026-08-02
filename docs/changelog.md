@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.5 RC2 — E.M.O.S. Memory Fix
+- Separată existența scanării de existența unui scor numeric.
+- Rezultatele rare cu scor «???» sunt recunoscute drept scanări finalizate.
+- Pentru scanări neconcludente, S.A.T.A. folosește temporar un coeficient operațional de 58%.
+- Dosarele Clasificate nu mai cer repetarea scanării după ce E.M.O.S. a rulat.
+- Refuzurile vechi de tip «scanare necesară» sunt eliminate automat.
+- Adăugată compatibilitate cu valorile legacy din session_state.
+
+# Changelog
+
 ## 0.3.4 RC1 — Playable Release Candidate
 - Adăugat sistemul invizibil Recovered Packets.
 - Pachetele pot conține bancuri, fun facts, rețete, filme sau exerciții.
