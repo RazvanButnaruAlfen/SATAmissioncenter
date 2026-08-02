@@ -6,6 +6,11 @@ import random
 import streamlit as st
 
 from core.mission_state import MissionState
+from core.sata_memory import (
+    combined_longing_score,
+    record_archive_unlock,
+    register_archive_attempt,
+)
 from .documents import DOCUMENTS
 from .messages import RECOMMENDATION
 from .security import check_access
@@ -21,15 +26,16 @@ def render_classified_archives(state: MissionState) -> None:
     render_header()
 
     if st.button("🔒 SOLICITĂ ACCES", use_container_width=True, key="archive_access"):
-        attempts = st.session_state.get("archive_attempts", 0) + 1
-        st.session_state["archive_attempts"] = attempts
+        attempts = register_archive_attempt()
         rng = _rng(state, attempts)
-        score = st.session_state.get("emos_last_score")
+        score = combined_longing_score()
         decision = check_access(score, rng)
 
         if decision.granted:
-            st.session_state["archive_document"] = rng.choice(DOCUMENTS)
+            document = rng.choice(DOCUMENTS)
+            st.session_state["archive_document"] = document
             st.session_state["archive_denial"] = None
+            record_archive_unlock(document["id"])
         else:
             st.session_state["archive_document"] = None
             st.session_state["archive_denial"] = (decision.reason, decision.score)
