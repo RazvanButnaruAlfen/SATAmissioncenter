@@ -5,7 +5,7 @@ from core.app_config import RELEASE_MODE
 
 def render_header() -> None:
     release_badge = (
-        '<div class="mission-badge">MISIUNE ACTIVĂ</div>'
+        '<div class="secret-badge">TOP SECRET</div>'
         if RELEASE_MODE
         else '<div class="dev-badge">TOP SECRET • DEV</div>'
     )
@@ -52,15 +52,16 @@ def render_header() -> None:
             font-weight:800;
             letter-spacing:.04em;
         }}
-        .mission-badge {{
-            border:1px solid #3d718e;
-            color:#80d0ff;
-            background:rgba(56,151,207,.08);
+        .secret-badge {{
+            border:2px solid #ff5b5b;
+            color:#ff6868;
+            background:rgba(255,91,91,.035);
             padding:10px 15px;
             border-radius:10px;
             font-weight:900;
             letter-spacing:.08em;
             white-space:nowrap;
+            transform:rotate(-2deg);
         }}
         .dev-badge {{
             border:2px solid #ff5b5b;

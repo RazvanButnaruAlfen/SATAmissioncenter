@@ -1178,39 +1178,32 @@ def render_mission_map(
         )
         return
 
-    # Europe and Romania overview maps.
+    # Europe overview: the detailed map is the background of the entire panel.
     start = stage["start"]
     end = stage["end"]
-    vehicle_lat, vehicle_lon = _interpolate(start, end, stage["progress"])
+
+    # Before 9 August the flight has not started, so the aircraft stays at origin.
+    vehicle_lat, vehicle_lon = start
+    razvan_uri = _image_data(AVATAR_DIR / "razvan_avatar.png")
+    alexandra_uri = _image_data(AVATAR_DIR / "alexandra_avatar.png")
 
     fig = go.Figure()
 
+    # Soft route shadow, followed by the operational dotted route.
     fig.add_trace(
-        go.Scattergeo(
+        go.Scattermapbox(
             lat=[start[0], end[0]],
             lon=[start[1], end[1]],
             mode="lines",
-            line=dict(width=8, color="rgba(22, 45, 65, 0.85)"),
+            line=dict(width=8, color="rgba(7,19,30,.60)"),
             hoverinfo="skip",
             showlegend=False,
         )
     )
-
     fig.add_trace(
-        go.Scattergeo(
-            lat=[start[0], vehicle_lat],
-            lon=[start[1], vehicle_lon],
-            mode="lines",
-            line=dict(width=5, color="#36aef5"),
-            hoverinfo="skip",
-            showlegend=False,
-        )
-    )
-
-    fig.add_trace(
-        go.Scattergeo(
-            lat=[vehicle_lat, end[0]],
-            lon=[vehicle_lon, end[1]],
+        go.Scattermapbox(
+            lat=[start[0], end[0]],
+            lon=[start[1], end[1]],
             mode="lines",
             line=dict(width=4, color="#ff70b8", dash="dot"),
             hoverinfo="skip",
@@ -1218,119 +1211,108 @@ def render_mission_map(
         )
     )
 
-    city_lats = [item[1][0] for item in stage["labels"]]
-    city_lons = [item[1][1] for item in stage["labels"]]
-    city_names = [item[0] for item in stage["labels"]]
-
     fig.add_trace(
-        go.Scattergeo(
-            lat=city_lats,
-            lon=city_lons,
+        go.Scattermapbox(
+            lat=[start[0]],
+            lon=[start[1]],
             mode="markers+text",
-            text=city_names,
-            textposition=["top left", "top right"],
-            textfont=dict(size=15, color=["#68c2ff", "#ff8bc5"]),
-            marker=dict(
-                size=15,
-                color=["#35aef5", "#ff70b8"],
-                line=dict(width=3, color="#eef8ff"),
-            ),
-            hovertemplate="%{text}<extra></extra>",
+            text=["Amersfoort"],
+            textposition="top left",
+            textfont=dict(size=15, color="#69c5ff"),
+            marker=dict(size=17, color="#36aef5"),
+            hovertemplate="Amersfoort<extra></extra>",
             showlegend=False,
         )
     )
-
     fig.add_trace(
-        go.Scattergeo(
+        go.Scattermapbox(
+            lat=[end[0]],
+            lon=[end[1]],
+            mode="markers+text",
+            text=["Ploiești"],
+            textposition="bottom right",
+            textfont=dict(size=15, color="#ff8bc5"),
+            marker=dict(size=17, color="#ff70b8"),
+            hovertemplate="Ploiești<extra></extra>",
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scattermapbox(
             lat=[vehicle_lat],
             lon=[vehicle_lon],
             mode="text",
-            text=[stage["vehicle"]],
-            textfont=dict(size=34, color="#ffffff"),
-            hovertemplate=f"{stage['vehicle_name']}<extra></extra>",
+            text=["✈"],
+            textfont=dict(size=35, color="#ffffff"),
+            hovertemplate="Zborul nu a început<extra></extra>",
             showlegend=False,
         )
     )
 
-    fig.update_geos(
-        domain=dict(x=[0.0, 1.0], y=[0.0, 0.76]),
-        projection_type="mercator",
-        showland=True,
-        landcolor="#0d2233",
-        showocean=True,
-        oceancolor="#07131e",
-        showlakes=True,
-        lakecolor="#07131e",
-        showcountries=True,
-        countrycolor="#34749d",
-        countrywidth=1.1,
-        showcoastlines=True,
-        coastlinecolor="#34749d",
-        coastlinewidth=1.2,
-        showframe=False,
-        bgcolor="rgba(0,0,0,0)",
-        lataxis_range=stage["lat_range"],
-        lonaxis_range=stage["lon_range"],
-        resolution=50,
-    )
-
     fig.update_layout(
-        height=620,
-        margin=dict(l=0, r=0, t=20, b=20),
+        height=650,
+        margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor="#08131e",
         plot_bgcolor="#08131e",
-        title=dict(text=""),
+        mapbox=dict(
+            style="carto-darkmatter",
+            center=dict(lat=48.6, lon=14.5),
+            zoom=3.35,
+        ),
         annotations=[
+            # Dark translucent title plate over the map.
             dict(
                 x=0.5, y=0.985, xref="paper", yref="paper",
-                text=f"<span style='font-size:14px;color:#63bdf4'><b>{stage['title']}</b></span>",
-                showarrow=False, xanchor="center", yanchor="top",
+                text=(
+                    "<span style='font-size:14px;color:#63bdf4'>"
+                    f"<b>{stage['title']}</b></span><br>"
+                    "<span style='font-size:29px;color:white'>"
+                    "<b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span><br>"
+                    "<span style='font-size:45px;color:#f49ac2'>"
+                    f"<b>{state.distance_km} km</b></span><br>"
+                    "<span style='font-size:13px;color:#b6c5cf'>"
+                    "DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>"
+                ),
+                showarrow=False,
+                xanchor="center",
+                yanchor="top",
+                align="center",
+                bgcolor="rgba(4,15,24,.78)",
+                bordercolor="rgba(52,116,157,.45)",
+                borderwidth=1,
+                borderpad=12,
             ),
             dict(
-                x=0.5, y=0.935, xref="paper", yref="paper",
-                text="<span style='font-size:27px;color:white'><b>MISIUNEA: APROPIERE EMOȚIONALĂ</b></span>",
-                showarrow=False, xanchor="center", yanchor="top",
-            ),
-            dict(
-                x=0.5, y=0.855, xref="paper", yref="paper",
-                text=f"<span style='font-size:42px;color:#f49ac2'><b>{state.distance_km} km</b></span>",
-                showarrow=False, xanchor="center", yanchor="top",
-            ),
-            dict(
-                x=0.5, y=0.790, xref="paper", yref="paper",
-                text="<span style='font-size:13px;color:#9fb1bf'>DISTANȚĂ OPERAȚIONALĂ ESTIMATĂ</span>",
-                showarrow=False, xanchor="center", yanchor="top",
-            ),
-            dict(
-                x=0.02, y=0.02, xref="paper", yref="paper",
+                x=0.02, y=0.035, xref="paper", yref="paper",
                 text="<b>RĂZVAN</b><br><span style='font-size:12px'>Amersfoort, Olanda</span>",
                 showarrow=False, align="left",
                 font=dict(size=18, color="#59b9ff"),
-                bgcolor="rgba(4,15,24,.78)", bordercolor="#2d536b", borderwidth=1, borderpad=8,
+                bgcolor="rgba(4,15,24,.86)",
+                bordercolor="#2d536b", borderwidth=1, borderpad=8,
             ),
             dict(
-                x=0.98, y=0.02, xref="paper", yref="paper",
+                x=0.98, y=0.035, xref="paper", yref="paper",
                 text="<b>ALEXANDRA</b><br><span style='font-size:12px'>Ploiești, România</span>",
-                showarrow=False, align="right",
-                xanchor="right",
+                showarrow=False, align="right", xanchor="right",
                 font=dict(size=18, color="#ff82bf"),
-                bgcolor="rgba(4,15,24,.78)", bordercolor="#67405a", borderwidth=1, borderpad=8,
+                bgcolor="rgba(4,15,24,.86)",
+                bordercolor="#67405a", borderwidth=1, borderpad=8,
             ),
         ],
         images=[
             dict(
-                source=_image_data(AVATAR_DIR / "razvan_avatar.png"),
+                source=razvan_uri,
                 xref="paper", yref="paper",
-                x=0.015, y=0.24,
-                sizex=0.17, sizey=0.17,
+                x=0.015, y=0.245,
+                sizex=0.13, sizey=0.13,
                 xanchor="left", yanchor="bottom",
                 sizing="contain", opacity=1, layer="above",
             ),
             dict(
-                source=_image_data(AVATAR_DIR / "alexandra_avatar.png"),
+                source=alexandra_uri,
                 xref="paper", yref="paper",
-                x=0.985, y=0.24,
-                sizex=0.17, sizey=0.17,
+                x=0.985, y=0.245,
+                sizex=0.13, sizey=0.13,
                 xanchor="right", yanchor="bottom",
                 sizing="contain", opacity=1, layer="above",
             ),
@@ -1344,12 +1326,63 @@ def render_mission_map(
         config={
             "displayModeBar": False,
             "responsive": True,
-            "scrollZoom": False,
+            "scrollZoom": True,
         },
     )
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Faza", state.phase)
-    c2.metric("Vehicul", stage["vehicle_name"])
-    c3.metric("Următorul punct", state.next_target)
-    c4.metric("Progres total", f"{state.progress_percent}%")
+    # Custom responsive cards prevent long values from being truncated.
+    st.markdown(
+        f"""
+        <style>
+        .eu-status-grid {{
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:12px;
+            margin-top:8px;
+        }}
+        .eu-status-card {{
+            background:#0b1722;
+            border:1px solid #294454;
+            border-radius:14px;
+            padding:14px 16px;
+            min-width:0;
+        }}
+        .eu-status-label {{
+            color:#8195a4;
+            font-size:.77rem;
+            margin-bottom:7px;
+        }}
+        .eu-status-value {{
+            color:#f4f7fa;
+            font-size:clamp(1rem,2vw,1.35rem);
+            line-height:1.22;
+            font-weight:850;
+            overflow-wrap:anywhere;
+            white-space:normal;
+        }}
+        @media(max-width:760px) {{
+            .eu-status-grid {{grid-template-columns:1fr 1fr;}}
+        }}
+        </style>
+
+        <div class="eu-status-grid">
+          <div class="eu-status-card">
+            <div class="eu-status-label">Faza</div>
+            <div class="eu-status-value">{state.phase}</div>
+          </div>
+          <div class="eu-status-card">
+            <div class="eu-status-label">Vehicul</div>
+            <div class="eu-status-value">{stage["vehicle_name"]}</div>
+          </div>
+          <div class="eu-status-card">
+            <div class="eu-status-label">Următorul punct</div>
+            <div class="eu-status-value">{state.next_target}</div>
+          </div>
+          <div class="eu-status-card">
+            <div class="eu-status-label">Progres total</div>
+            <div class="eu-status-value">{state.progress_percent}%</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
