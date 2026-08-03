@@ -14,6 +14,7 @@ from .engine import (
     get_state,
     reset_transmission,
     submit_anagram,
+    submit_quiz,
     tune_frequency,
 )
 
@@ -208,7 +209,7 @@ def render_intimacy_protocol(state: MissionState) -> None:
                 _decrypt_animation()
                 st.rerun()
 
-    else:
+    elif puzzle["type"] == "frequency":
         st.markdown(
             '<div class="pink-hint" style="margin-top:18px">'
             'Reglează frecvența până când semnalul intră în zona de blocare. '
@@ -233,19 +234,59 @@ def render_intimacy_protocol(state: MissionState) -> None:
                 _decrypt_animation()
                 st.rerun()
 
+
+    else:
+        st.markdown(
+            f"""
+            <div class="reward-card" style="text-align:left">
+              <div class="reward-meta">
+                MEMORY ARCHIVES • {html.escape(str(puzzle["category"]))}
+              </div>
+              <div class="reward-title" style="text-align:left">
+                🗂 Verificare de memorie personală
+              </div>
+              <div class="reward-content" style="text-align:left">
+                {html.escape(str(puzzle["question"]))}
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        selected_answer = st.radio(
+            "Selectează răspunsul corect",
+            options=list(range(len(puzzle["answers"]))),
+            format_func=lambda index: str(puzzle["answers"][index]),
+            index=None,
+            key=f'pink_quiz_{puzzle["question_id"]}',
+        )
+
+        if st.button(
+            "🗂 VALIDEAZĂ MEMORIA",
+            use_container_width=True,
+            type="primary",
+            key="pink_submit_quiz",
+        ):
+            if submit_quiz(today, selected_answer):
+                _decrypt_animation()
+                st.rerun()
+
     feedback = get_state(today).get("feedback")
     if feedback:
         st.warning(feedback)
 
     if not RELEASE_MODE:
         with st.expander("🛠 PINK ARCHIVES — DEV TOOLS"):
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
             if col1.button("Forțează anagramă", use_container_width=True):
                 reset_transmission(today, force_type="anagram")
                 st.rerun()
             if col2.button("Forțează frecvență", use_container_width=True):
                 reset_transmission(today, force_type="frequency")
                 st.rerun()
-            if col3.button("Reset", use_container_width=True):
+            if col3.button("Forțează quiz", use_container_width=True):
+                reset_transmission(today, force_type="quiz")
+                st.rerun()
+            if col4.button("Reset", use_container_width=True):
                 reset_transmission(today)
                 st.rerun()

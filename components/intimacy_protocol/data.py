@@ -28,3 +28,8 @@ def load_anagrams() -> tuple[dict[str, Any], ...]:
 @lru_cache(maxsize=1)
 def load_pre_meeting_packets() -> tuple[dict[str, Any], ...]:
     return tuple(_load_json("pre_meeting_packets.json"))
+
+@lru_cache(maxsize=1)
+def load_memory_questions() -> tuple[dict[str, Any], ...]:
+    return tuple(_load_json("memory_questions.json"))
+

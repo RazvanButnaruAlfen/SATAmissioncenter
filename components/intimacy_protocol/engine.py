@@ -7,7 +7,7 @@ from typing import Any
 
 import streamlit as st
 
-from .data import load_anagrams, load_pre_meeting_packets
+from .data import load_anagrams, load_memory_questions, load_pre_meeting_packets
 
 
 STATE_KEY = "sata_pink_archives"
@@ -22,6 +22,7 @@ def _default_state(today: date) -> dict[str, Any]:
         "history": [],
         "attempts": 0,
         "feedback": None,
+        "quiz_history": [],
     }
 
 
@@ -62,7 +63,7 @@ def create_puzzle(
 ) -> dict[str, Any]:
     state = get_state(today)
     random_source = rng or random.SystemRandom()
-    puzzle_type = force_type or random_source.choice(("anagram", "frequency"))
+    puzzle_type = force_type or random_source.choice(("anagram", "frequency", "quiz"))
 
     if puzzle_type == "anagram":
         item = random_source.choice(load_anagrams())
@@ -73,12 +74,41 @@ def create_puzzle(
             "hint": item["hint"],
             "level": item["level"],
         }
-    else:
+    elif puzzle_type == "frequency":
         target = random_source.randint(28, 92)
         puzzle = {
             "type": "frequency",
             "target": target,
             "level": random_source.choice(("GREEN", "PINK", "PINK", "RED")),
+        }
+    else:
+        questions = list(load_memory_questions())
+        recent = set(state.get("quiz_history", [])[-4:])
+        available = [
+            question for question in questions
+            if question["id"] not in recent
+        ]
+        if not available:
+            available = questions
+
+        question = random_source.choice(available)
+        answers = list(enumerate(question["answers"]))
+        random_source.shuffle(answers)
+
+        puzzle = {
+            "type": "quiz",
+            "question_id": question["id"],
+            "category": question["category"],
+            "question": question["question"],
+            "answers": [answer for _, answer in answers],
+            "correct": next(
+                new_index
+                for new_index, (original_index, _) in enumerate(answers)
+                if original_index == int(question["correct"])
+            ),
+            "success": question["success"],
+            "failure": question["failure"],
+            "level": question["difficulty"],
         }
 
     state["puzzle"] = puzzle
@@ -162,6 +192,27 @@ def tune_frequency(today: date, value: int) -> bool:
         state["feedback"] = proximity + "Redu frecvența."
     return False
 
+
+
+def submit_quiz(today: date, selected_index: int | None) -> bool:
+    state = get_state(today)
+    puzzle = current_puzzle(today)
+    state["attempts"] = int(state.get("attempts", 0)) + 1
+
+    if selected_index is None:
+        state["feedback"] = "Selectează un răspuns înainte de validare."
+        return False
+
+    if int(selected_index) == int(puzzle["correct"]):
+        history = list(state.get("quiz_history", []))
+        history.append(str(puzzle["question_id"]))
+        state["quiz_history"] = history[-8:]
+        state["feedback"] = str(puzzle["success"])
+        unlock_reward(today)
+        return True
+
+    state["feedback"] = str(puzzle["failure"])
+    return False
 
 def reset_transmission(
     today: date,
