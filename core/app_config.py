@@ -3,5 +3,5 @@ RELEASE_MODE = True
 SHOW_BUILD_MARKERS = False
 SHOW_RESPONSIVE_DEBUG = False
 
-APP_TITLE = "S.A.T.A. Mission Center Developer Mode"
+APP_TITLE = "S.A.T.A. Mission Center"
 APP_ICON = "📡"
