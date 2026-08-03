@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0 RC1 — Memory Archives Quiz
+- Adăugată a treia metodă de acces la PINK ARCHIVES: quiz personal.
+- Întrebările sunt selectate aleatoriu alături de anagramă și frecvență.
+- Adăugate nouă întrebări despre Agentul R, amintiri comune și misiuni planificate.
+- Ordinea răspunsurilor este amestecată la fiecare apariție.
+- Întrebările recente sunt evitate pentru a reduce repetiția.
+- Răspunsurile greșite primesc mesaje tematice S.A.T.A.
+- Adăugat buton DEV pentru forțarea quizului.
+
+# Changelog
+
 ## 0.6.4 RC5 — Frequency Component Height Fix
 - Eliminată calcularea înălțimii iframe-ului prin `scrollHeight`.
 - Componenta sliderului are acum o înălțime fixă și compactă.
