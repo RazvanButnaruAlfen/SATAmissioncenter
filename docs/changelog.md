@@ -1,5 +1,61 @@
 # Changelog
 
+## 0.7.0 RC1 — Memory Archives Quiz
+- Adăugată a treia metodă de acces la PINK ARCHIVES: quiz personal.
+- Întrebările sunt selectate aleatoriu alături de anagramă și frecvență.
+- Adăugate nouă întrebări despre Agentul R, amintiri comune și misiuni planificate.
+- Ordinea răspunsurilor este amestecată la fiecare apariție.
+- Întrebările recente sunt evitate pentru a reduce repetiția.
+- Răspunsurile greșite primesc mesaje tematice S.A.T.A.
+- Adăugat buton DEV pentru forțarea quizului.
+
+# Changelog
+
+## 0.6.4 RC5 — Frequency Component Height Fix
+- Eliminată calcularea înălțimii iframe-ului prin `scrollHeight`.
+- Componenta sliderului are acum o înălțime fixă și compactă.
+- Adăugate `min-height: 0` și `overflow: hidden` pentru iframe.
+- Eliminat spațiul vertical excesiv de sub slider.
+
+# Changelog
+
+## 0.6.3 RC4 — Custom Audio Slider
+- Înlocuit scriptul care încerca să acceseze DOM-ul părinte din iframe.
+- Adăugată o componentă Streamlit bidirecțională proprie.
+- Sliderul și Web Audio rulează acum în același context securizat.
+- Tonul se modifică live în timp ce sliderul este ținut apăsat.
+- Valoarea finală este trimisă către Python la eliberarea sliderului.
+- Păstrată toleranța de acces de ±5 puncte.
+
+# Changelog
+
+## 0.6.2 RC3 — Live Frequency Scanner
+- Adăugat feedback audio live în timpul deplasării sliderului.
+- Tonul devine mai înalt pe măsură ce valoarea se apropie de țintă.
+- Sunetul pornește numai cât timp sliderul este ținut apăsat.
+- Adăugat feedback live: MAI SUS, MAI JOS și ZONĂ DE BLOCARE.
+- Toleranța de validare a fost extinsă la ±5 puncte.
+- Mesajele după verificare indică și nivelul de apropiere.
+
+# Changelog
+
+## 0.6.1 RC2 — Poetry Line Break Fix
+- Secvențele `\\n` sunt transformate în rânduri noi la afișarea transmisiilor lirice.
+- Sunt acceptate și newline-urile reale din conținut.
+
+# Changelog
+
+## 0.6.0 RC1 — PINK ARCHIVES
+- Adăugat modulul intim PINK ARCHIVES.
+- Adăugate două tipuri de puzzle: anagramă și reglarea frecvenței.
+- Adăugate cuvinte romantice și îndrăznețe, inclusiv RÂVNIRE, EXCITARE și ORGASM.
+- Adăugate 18 protocoale pentru anticipare, flirt la distanță și pasiune.
+- Adăugate trei poezii senzuale originale S.A.T.A.
+- După rezolvare poate fi interceptată o transmisie nouă.
+- Instrumentele de forțare/resetare sunt vizibile numai în DEV.
+
+# Changelog
+
 ## Revizie lingvistică — limba română
 - Corectat „curiositate” în „curiozitate”.
 - Revizuite rezultatele E.M.O.S. și formulările care sunau traduse.

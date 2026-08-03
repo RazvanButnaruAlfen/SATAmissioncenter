@@ -1,0 +1,57 @@
+[
+  {
+    "word": "DOR",
+    "level": "GREEN",
+    "hint": "Îl simți mai ales când distanța devine enervantă."
+  },
+  {
+    "word": "FLIRT",
+    "level": "GREEN",
+    "hint": "O conversație care știe exact ce face."
+  },
+  {
+    "word": "SĂRUT",
+    "level": "GREEN",
+    "hint": "Moment scurt. Efecte disproporționate."
+  },
+  {
+    "word": "CHIMIE",
+    "level": "PINK",
+    "hint": "Nu este materia preferată a tuturor, dar aici ajută."
+  },
+  {
+    "word": "PASIUNE",
+    "level": "PINK",
+    "hint": "Temperatură emoțională peste valoarea nominală."
+  },
+  {
+    "word": "DORINȚĂ",
+    "level": "PINK",
+    "hint": "Poate crește chiar și atunci când distanța rămâne constantă."
+  },
+  {
+    "word": "RÂVNIRE",
+    "level": "PINK",
+    "hint": "Un dor mai intens și mai puțin răbdător."
+  },
+  {
+    "word": "ATINGERE",
+    "level": "PINK",
+    "hint": "Deocamdată disponibilă doar în imaginație."
+  },
+  {
+    "word": "FANTEZIE",
+    "level": "RED",
+    "hint": "Un scenariu pe care mintea îl produce fără autorizație."
+  },
+  {
+    "word": "EXCITARE",
+    "level": "RED",
+    "hint": "Indicator biologic pe care S.A.T.A. pretinde că îl poate calcula."
+  },
+  {
+    "word": "ORGASM",
+    "level": "RED",
+    "hint": "Rezultat final cu reputație foarte bună."
+  }
+]

@@ -1,0 +1,164 @@
+[
+  {
+    "id": "VENUS-001",
+    "category": "ANTICIPARE",
+    "level": "PINK",
+    "icon": "🔥",
+    "title": "Lasă un indiciu, nu întreaga poveste",
+    "content": "Trimite-i lui Răzvan un mesaj care sugerează ce ți-ar plăcea să se întâmple când vă vedeți, dar oprește-te înainte de detalii. Anticiparea lucrează mai bine când imaginația primește suficient spațiu.",
+    "comment": "S.A.T.A. recomandă dozarea responsabilă a misterului."
+  },
+  {
+    "id": "VENUS-002",
+    "category": "VOCE",
+    "level": "PINK",
+    "icon": "🎙️",
+    "title": "Mesajul vocal de după miezul serii",
+    "content": "Înregistrează un mesaj vocal scurt, spus mai lent decât de obicei. Nu trebuie să fie explicit. Tonul, pauzele și faptul că este destinat numai lui pot face mai mult decât un paragraf întreg.",
+    "comment": "Uneori frecvența vocii transmite mai mult decât textul."
+  },
+  {
+    "id": "VENUS-003",
+    "category": "FLIRT",
+    "level": "GREEN",
+    "icon": "😏",
+    "title": "Întrebarea care rămâne în aer",
+    "content": "Întreabă-l care este primul lucru pe care ar vrea să îl facă atunci când veți rămâne singuri. Nu răspunde imediat cu propria variantă.",
+    "comment": "Tăcerea controlată este un instrument avansat de flirt."
+  },
+  {
+    "id": "VENUS-004",
+    "category": "IMAGINAȚIE",
+    "level": "RED",
+    "icon": "🌙",
+    "title": "Scenariul în trei propoziții",
+    "content": "Descrie o scenă pasională în exact trei propoziții: unde sunteți, ce observi prima dată și ce ai vrea să urmeze. Restul rămâne clasificat.",
+    "comment": "Limita de trei propoziții a fost introdusă pentru protejarea productivității."
+  },
+  {
+    "id": "VENUS-005",
+    "category": "MEMORIE",
+    "level": "PINK",
+    "icon": "💭",
+    "title": "Recuperează un moment",
+    "content": "Alege o amintire în care atracția dintre voi a fost clară și spune-i un singur detaliu pe care îl ții minte: o privire, un gest, un parfum sau o replică.",
+    "comment": "Memoria senzorială are tendința de a reactiva semnalul."
+  },
+  {
+    "id": "VENUS-006",
+    "category": "PROVOCARE",
+    "level": "PINK",
+    "icon": "📱",
+    "title": "Fotografie cu mesaj ascuns",
+    "content": "Trimite o fotografie elegantă, nu neapărat explicită, care conține un detaliu ales intenționat: o privire, o ținută, buzele, umărul sau lumina din cameră. Lasă-l să observe singur.",
+    "comment": "Sugestia bine plasată depășește adesea explicația."
+  },
+  {
+    "id": "VENUS-007",
+    "category": "CONSENS",
+    "level": "GREEN",
+    "icon": "🤝",
+    "title": "Întrebarea care amplifică încrederea",
+    "content": "Întreabă-l ce îl face să se simtă dorit și spune-i ce funcționează pentru tine. Claritatea și consimțământul nu reduc pasiunea; îi oferă direcție.",
+    "comment": "Datele bune îmbunătățesc orice protocol."
+  },
+  {
+    "id": "VENUS-008",
+    "category": "JOC",
+    "level": "PINK",
+    "icon": "🎲",
+    "title": "Alege unul dintre trei",
+    "content": "Trimite-i trei opțiuni pentru întâlnire: un sărut lent, o îmbrățișare care durează prea mult sau o șoaptă la ureche. Cere-i să aleagă una. Nu confirma dacă va primi doar una.",
+    "comment": "Ambiguitatea controlată a fost aprobată de departamentul Venus."
+  },
+  {
+    "id": "VENUS-009",
+    "category": "ANTICIPARE",
+    "level": "RED",
+    "icon": "⏳",
+    "title": "Promisiune cu termen de activare",
+    "content": "Spune-i că ai o surpriză pentru după 14 august și oferă un singur indiciu senzorial: parfum, întuneric, muzică, șoaptă sau atingere.",
+    "comment": "Pachetul nu trebuie deschis înainte de data autorizată."
+  },
+  {
+    "id": "VENUS-010",
+    "category": "MUZICĂ",
+    "level": "GREEN",
+    "icon": "🎵",
+    "title": "Coloana sonoră a anticipării",
+    "content": "Alege o melodie care te face să te gândești la apropiere și trimite-o fără explicații. Discuția despre motiv poate avea loc mai târziu.",
+    "comment": "S.A.T.A. nu răspunde pentru efectele unei selecții muzicale reușite."
+  },
+  {
+    "id": "VENUS-011",
+    "category": "POEZIE",
+    "level": "PINK",
+    "icon": "📜",
+    "title": "Transmisie lirică",
+    "content": "Unele atingeri încep de la distanță:\\nîntr-o voce coborâtă,\\nîntr-o pauză prea lungă,\\nîn promisiunea că mâinile vor continua cândva propoziția.",
+    "comment": "Text original recuperat din arhiva S.A.T.A."
+  },
+  {
+    "id": "VENUS-012",
+    "category": "POEZIE",
+    "level": "RED",
+    "icon": "📜",
+    "title": "Transmisie după stingerea luminilor",
+    "content": "Te doresc nu ca pe o destinație,\\nci ca pe drumul care începe\\ncând toate hărțile se termină\\nși rămâne numai pielea să ne arate direcția.",
+    "comment": "Coordonatele exacte au fost eliminate din motive de securitate."
+  },
+  {
+    "id": "VENUS-013",
+    "category": "POEZIE",
+    "level": "PINK",
+    "icon": "📜",
+    "title": "Fragment recuperat",
+    "content": "Între noi sunt încă kilometri,\\ndar dorința nu cunoaște geografie.\\nEa ajunge prima,\\nse așază între două respirații\\nși așteaptă.",
+    "comment": "Satelitul confirmă o abatere semnificativă de la neutralitate."
+  },
+  {
+    "id": "VENUS-014",
+    "category": "CURIOSITATE",
+    "level": "PINK",
+    "icon": "💬",
+    "title": "Completează propoziția",
+    "content": "Trimite-i: «Când ne vedem, vreau să...» și lasă propoziția neterminată. După ce răspunde, poți decide cât din fișier declasifici.",
+    "comment": "Tehnică simplă. Randament emoțional ridicat."
+  },
+  {
+    "id": "VENUS-015",
+    "category": "JOC",
+    "level": "RED",
+    "icon": "🔐",
+    "title": "Un adevăr și o fantezie",
+    "content": "Spune-i două lucruri: unul pe care ți-l amintești că s-a întâmplat între voi și unul pe care ți-ar plăcea să îl trăiți. Lasă-l să ghicească ordinea.",
+    "comment": "S.A.T.A. recomandă continuarea jocului numai între adulți care se simt confortabil."
+  },
+  {
+    "id": "VENUS-016",
+    "category": "TENSIUNE",
+    "level": "PINK",
+    "icon": "⚡",
+    "title": "Nu răspunde imediat",
+    "content": "Când conversația devine flirtantă, lasă câteva secunde în plus înainte de răspuns. Nu ca joc de putere, ci pentru a lăsa momentul să respire.",
+    "comment": "Pauzele bine folosite pot amplifica semnalul."
+  },
+  {
+    "id": "VENUS-017",
+    "category": "SENZORIAL",
+    "level": "RED",
+    "icon": "🌹",
+    "title": "Construiește scena prin simțuri",
+    "content": "Alege trei elemente pentru prima seară împreună: o lumină, un parfum și o melodie. Trimite-i doar lista, fără explicații.",
+    "comment": "Sistemul detectează o probabilitate crescută de imaginație activă."
+  },
+  {
+    "id": "VENUS-018",
+    "category": "DORINȚĂ",
+    "level": "RED",
+    "icon": "❤️‍🔥",
+    "title": "Spune ce dorești, nu doar ce simți",
+    "content": "În loc de «mi-e dor de tine», încearcă o formulare mai concretă: ce privire, ce atingere sau ce apropiere îți lipsește. Specificitatea poate transforma dorul în tensiune pasională.",
+    "comment": "Coeficientul de claritate erotică a crescut."
+  }
+]

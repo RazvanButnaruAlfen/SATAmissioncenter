@@ -1,0 +1,137 @@
+[
+  {
+    "id": "MEM-R-001",
+    "category": "AGENT R",
+    "difficulty": "GREEN",
+    "question": "Care este sportul preferat al lui Răzvan?",
+    "answers": [
+      "Tenis",
+      "Squash",
+      "Padel",
+      "Badminton"
+    ],
+    "correct": 2,
+    "success": "Profil validat. Agentul R petrece o cantitate suspectă de timp pe terenul de padel.",
+    "failure": "Memorie neconfirmată. Indiciu: sport cu pereți, rachetă și tendință ridicată de dependență."
+  },
+  {
+    "id": "MEM-R-002",
+    "category": "AGENT R",
+    "difficulty": "GREEN",
+    "question": "În ce oraș locuiește Răzvan?",
+    "answers": [
+      "Utrecht",
+      "Amersfoort",
+      "Almere",
+      "Hilversum"
+    ],
+    "correct": 1,
+    "success": "Coordonate confirmate: Amersfoort. Satelitul poate continua monitorizarea.",
+    "failure": "Coordonatele nu corespund profilului Agentului R."
+  },
+  {
+    "id": "MEM-R-003",
+    "category": "AGENT R",
+    "difficulty": "GREEN",
+    "question": "La ce companie lucrează Răzvan în prezent?",
+    "answers": [
+      "Siemens",
+      "Yokogawa",
+      "Alfen",
+      "ASML"
+    ],
+    "correct": 2,
+    "success": "Identitate profesională confirmată. Stațiile de încărcare rămân sub observație.",
+    "failure": "Dosarul profesional nu a putut fi validat."
+  },
+  {
+    "id": "MEM-R-004",
+    "category": "AGENT R",
+    "difficulty": "GREEN",
+    "question": "Ce stil de dans practică Răzvan?",
+    "answers": [
+      "Bachata",
+      "Kizomba",
+      "Tango",
+      "Salsa"
+    ],
+    "correct": 3,
+    "success": "Ritm confirmat. S.A.T.A. nu garantează însă respectarea tuturor pașilor.",
+    "failure": "Ritmul selectat nu corespunde arhivei Agentului R."
+  },
+  {
+    "id": "MEM-R-005",
+    "category": "AGENT R",
+    "difficulty": "PINK",
+    "question": "Ce domeniu îl pasionează în mod deosebit pe Răzvan?",
+    "answers": [
+      "Istorie",
+      "Biologie",
+      "Economie",
+      "Astronomie"
+    ],
+    "correct": 0,
+    "success": "Profil intelectual confirmat. Probabilitatea unei discuții lungi despre trecut rămâne ridicată.",
+    "failure": "S.A.T.A. a detectat o abatere de la profilul intelectual cunoscut."
+  },
+  {
+    "id": "MEM-A-001",
+    "category": "ARHIVĂ COMUNĂ",
+    "difficulty": "RED",
+    "question": "Ce film ați văzut împreună la cinema?",
+    "answers": [
+      "Mercy",
+      "The Astronaut",
+      "Proiectul Hail Mary",
+      "Good Luck, Have Fun, Don't Die"
+    ],
+    "correct": 2,
+    "success": "Memorie cinematografică validată. Proiectul Hail Mary a fost recuperat din arhiva comună.",
+    "failure": "Arhiva cinematografică este temporar coruptă. Se recomandă o nouă ieșire la cinema."
+  },
+  {
+    "id": "MEM-A-002",
+    "category": "ARHIVĂ COMUNĂ",
+    "difficulty": "PINK",
+    "question": "Unde a avut loc primul vostru dans?",
+    "answers": [
+      "Giulia, Ploiești",
+      "Brașov",
+      "Amersfoort",
+      "București"
+    ],
+    "correct": 0,
+    "success": "Primul dans a fost localizat: Giulia, Ploiești, într-o vineri seara.",
+    "failure": "Locația nu corespunde arhivei. Sistemul recomandă repetarea dansului pentru recalibrare."
+  },
+  {
+    "id": "MEM-A-003",
+    "category": "MISIUNE PLANIFICATĂ",
+    "difficulty": "GREEN",
+    "question": "În ce oraș este planificat primul vostru weekend împreună?",
+    "answers": [
+      "Sibiu",
+      "Brașov",
+      "Sighișoara",
+      "Cluj-Napoca"
+    ],
+    "correct": 1,
+    "success": "Operațiunea Brașov confirmată. Probabilitatea unor amintiri bune este peste limita de măsurare.",
+    "failure": "Destinația aleasă nu apare în planul operațional curent."
+  },
+  {
+    "id": "MEM-A-004",
+    "category": "MISIUNE PLANIFICATĂ",
+    "difficulty": "PINK",
+    "question": "În ce oraș ar vrea Răzvan să o ducă pe Alexandra la plimbare?",
+    "answers": [
+      "Viena",
+      "Budapesta",
+      "Praga",
+      "Cracovia"
+    ],
+    "correct": 2,
+    "success": "Operațiunea Praga rămâne activă. Podul Carol a fost marcat drept obiectiv romantic prioritar.",
+    "failure": "Destinația nu corespunde planului secret al Agentului R."
+  }
+]
