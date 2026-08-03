@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.3 RC4 — Custom Audio Slider
+- Înlocuit scriptul care încerca să acceseze DOM-ul părinte din iframe.
+- Adăugată o componentă Streamlit bidirecțională proprie.
+- Sliderul și Web Audio rulează acum în același context securizat.
+- Tonul se modifică live în timp ce sliderul este ținut apăsat.
+- Valoarea finală este trimisă către Python la eliberarea sliderului.
+- Păstrată toleranța de acces de ±5 puncte.
+
+# Changelog
+
 ## 0.6.2 RC3 — Live Frequency Scanner
 - Adăugat feedback audio live în timpul deplasării sliderului.
 - Tonul devine mai înalt pe măsură ce valoarea se apropie de țintă.
