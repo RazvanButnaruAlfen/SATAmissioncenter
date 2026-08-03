@@ -142,7 +142,7 @@ def _render_reward(reward: dict) -> None:
           </div>
           <div class="reward-icon">{html.escape(str(reward["icon"]))}</div>
           <div class="reward-title">{html.escape(str(reward["title"]))}</div>
-          <div class="reward-content">{html.escape(str(reward["content"]))}</div>
+          <div class="reward-content">{html.escape(str(reward["content"])).replace(chr(92) + "n", "<br>").replace(chr(10), "<br>")}</div>
           <div class="reward-comment">S.A.T.A.: {html.escape(str(reward["comment"]))}</div>
         </div>
         """,
