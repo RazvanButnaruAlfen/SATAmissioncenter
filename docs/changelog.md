@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.2 RC3 — Live Frequency Scanner
+- Adăugat feedback audio live în timpul deplasării sliderului.
+- Tonul devine mai înalt pe măsură ce valoarea se apropie de țintă.
+- Sunetul pornește numai cât timp sliderul este ținut apăsat.
+- Adăugat feedback live: MAI SUS, MAI JOS și ZONĂ DE BLOCARE.
+- Toleranța de validare a fost extinsă la ±5 puncte.
+- Mesajele după verificare indică și nivelul de apropiere.
+
+# Changelog
+
 ## 0.6.1 RC2 — Poetry Line Break Fix
 - Secvențele `\\n` sunt transformate în rânduri noi la afișarea transmisiilor lirice.
 - Sunt acceptate și newline-urile reale din conținut.
