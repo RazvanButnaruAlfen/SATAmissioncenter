@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0 RC1 — PINK ARCHIVES
+- Adăugat modulul intim PINK ARCHIVES.
+- Adăugate două tipuri de puzzle: anagramă și reglarea frecvenței.
+- Adăugate cuvinte romantice și îndrăznețe, inclusiv RÂVNIRE, EXCITARE și ORGASM.
+- Adăugate 18 protocoale pentru anticipare, flirt la distanță și pasiune.
+- Adăugate trei poezii senzuale originale S.A.T.A.
+- După rezolvare poate fi interceptată o transmisie nouă.
+- Instrumentele de forțare/resetare sunt vizibile numai în DEV.
+
+# Changelog
+
 ## Revizie lingvistică — limba română
 - Corectat „curiositate” în „curiozitate”.
 - Revizuite rezultatele E.M.O.S. și formulările care sunau traduse.
