@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.4 RC5 — Frequency Component Height Fix
+- Eliminată calcularea înălțimii iframe-ului prin `scrollHeight`.
+- Componenta sliderului are acum o înălțime fixă și compactă.
+- Adăugate `min-height: 0` și `overflow: hidden` pentru iframe.
+- Eliminat spațiul vertical excesiv de sub slider.
+
+# Changelog
+
 ## 0.6.3 RC4 — Custom Audio Slider
 - Înlocuit scriptul care încerca să acceseze DOM-ul părinte din iframe.
 - Adăugată o componentă Streamlit bidirecțională proprie.
