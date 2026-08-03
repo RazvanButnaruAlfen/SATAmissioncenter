@@ -5,6 +5,7 @@ import html
 import time
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 from core.app_config import RELEASE_MODE
 from core.mission_state import MissionState
@@ -150,6 +151,208 @@ def _render_reward(reward: dict) -> None:
     )
 
 
+
+def _install_live_frequency_audio(target: int) -> None:
+    """Attach live Web Audio feedback to the native Streamlit range input.
+
+    The oscillator starts only during a pointer/touch gesture, which keeps it
+    compatible with browser autoplay restrictions. The native Streamlit slider
+    still supplies the final value used by Python.
+    """
+    components.html(
+        f"""
+        <script>
+        (() => {{
+          const TARGET = {int(target)};
+          const LABEL_TEXT = "Frecvență de recepție";
+
+          function locateSlider() {{
+            const doc = window.parent.document;
+            const sliders = Array.from(doc.querySelectorAll('input[type="range"]'));
+
+            return sliders.find((slider) => {{
+              const container = slider.closest('[data-testid="stSlider"]')
+                || slider.parentElement?.parentElement;
+              return container && container.innerText.includes(LABEL_TEXT);
+            }});
+          }}
+
+          function statusFor(value, target) {{
+            const delta = value - target;
+            const distance = Math.abs(delta);
+
+            if (distance <= 5) {{
+              return {{
+                text: "✓ ZONĂ DE BLOCARE — apasă VERIFICĂ",
+                tone: "locked"
+              }};
+            }}
+
+            if (delta < 0) {{
+              return {{ text: "↑ MAI SUS", tone: "low" }};
+            }}
+
+            return {{ text: "↓ MAI JOS", tone: "high" }};
+          }}
+
+          function frequencyFor(value, target) {{
+            const distance = Math.abs(value - target);
+            const closeness = Math.max(0, 1 - Math.min(distance, 50) / 50);
+
+            // 180 Hz when far away, rising smoothly to about 1080 Hz.
+            return 180 + Math.pow(closeness, 1.55) * 900;
+          }}
+
+          function bindSlider(slider) {{
+            slider.dataset.sataTarget = String(TARGET);
+
+            let container = slider.closest('[data-testid="stSlider"]')
+              || slider.parentElement?.parentElement;
+
+            if (!container) return;
+
+            let status = container.querySelector('[data-sata-frequency-status]');
+            if (!status) {{
+              status = window.parent.document.createElement('div');
+              status.dataset.sataFrequencyStatus = "true";
+              status.style.marginTop = "8px";
+              status.style.padding = "8px 12px";
+              status.style.borderRadius = "10px";
+              status.style.border = "1px solid rgba(255,112,184,.35)";
+              status.style.background = "rgba(35,18,34,.72)";
+              status.style.color = "#d7bfd0";
+              status.style.fontSize = ".84rem";
+              status.style.fontWeight = "800";
+              status.style.textAlign = "center";
+              status.style.letterSpacing = ".05em";
+              status.textContent = "Ține sliderul apăsat pentru scanare audio.";
+              container.appendChild(status);
+            }}
+
+            const updateStatus = () => {{
+              const value = Number(slider.value);
+              const target = Number(slider.dataset.sataTarget);
+              const result = statusFor(value, target);
+
+              status.textContent = result.text;
+              status.style.color =
+                result.tone === "locked" ? "#ffd98d" :
+                result.tone === "low" ? "#72c7ff" : "#ff91c6";
+              status.style.borderColor =
+                result.tone === "locked"
+                  ? "rgba(255,217,141,.72)"
+                  : "rgba(255,112,184,.35)";
+
+              const audio = slider._sataAudio;
+              if (audio?.oscillator && audio?.context) {{
+                const hz = frequencyFor(value, target);
+                audio.oscillator.frequency.setTargetAtTime(
+                  hz,
+                  audio.context.currentTime,
+                  0.025
+                );
+
+                // Slightly stronger signal near the target.
+                const distance = Math.abs(value - target);
+                const gain = distance <= 5 ? 0.105 : 0.055;
+                audio.gain.gain.setTargetAtTime(
+                  gain,
+                  audio.context.currentTime,
+                  0.035
+                );
+              }}
+            }};
+
+            const startSound = async () => {{
+              if (slider._sataAudio?.oscillator) {{
+                updateStatus();
+                return;
+              }}
+
+              const AudioContext = window.AudioContext || window.webkitAudioContext;
+              if (!AudioContext) {{
+                status.textContent = "Audio indisponibil în acest browser.";
+                return;
+              }}
+
+              const context = new AudioContext();
+              await context.resume();
+
+              const oscillator = context.createOscillator();
+              const gain = context.createGain();
+
+              oscillator.type = "sine";
+              gain.gain.value = 0.0001;
+              oscillator.connect(gain);
+              gain.connect(context.destination);
+              oscillator.start();
+
+              slider._sataAudio = {{ context, oscillator, gain }};
+              updateStatus();
+            }};
+
+            const stopSound = () => {{
+              const audio = slider._sataAudio;
+              if (!audio) return;
+
+              try {{
+                audio.gain.gain.setTargetAtTime(
+                  0.0001,
+                  audio.context.currentTime,
+                  0.02
+                );
+                window.setTimeout(() => {{
+                  try {{ audio.oscillator.stop(); }} catch (_) {{}}
+                  try {{ audio.context.close(); }} catch (_) {{}}
+                }}, 90);
+              }} catch (_) {{}}
+
+              slider._sataAudio = null;
+            }};
+
+            if (slider.dataset.sataAudioBound !== "true") {{
+              slider.dataset.sataAudioBound = "true";
+              slider.addEventListener("pointerdown", startSound);
+              slider.addEventListener("touchstart", startSound, {{ passive: true }});
+              slider.addEventListener("input", updateStatus);
+              slider.addEventListener("change", updateStatus);
+              slider.addEventListener("pointerup", stopSound);
+              slider.addEventListener("pointercancel", stopSound);
+              slider.addEventListener("touchend", stopSound);
+              slider.addEventListener("touchcancel", stopSound);
+              window.parent.addEventListener("blur", stopSound);
+            }}
+
+            updateStatus();
+          }}
+
+          function attach() {{
+            const slider = locateSlider();
+            if (slider) {{
+              bindSlider(slider);
+              return true;
+            }}
+            return false;
+          }}
+
+          if (!attach()) {{
+            const observer = new MutationObserver(() => {{
+              if (attach()) observer.disconnect();
+            }});
+            observer.observe(window.parent.document.body, {{
+              childList: true,
+              subtree: true
+            }});
+
+            window.setTimeout(() => observer.disconnect(), 10000);
+          }}
+        }})();
+        </script>
+        """,
+        height=0,
+        scrolling=False,
+    )
+
 def render_intimacy_protocol(state: MissionState) -> None:
     _styles()
     today = state.current_date
@@ -220,8 +423,10 @@ def render_intimacy_protocol(state: MissionState) -> None:
             value=50,
             key="pink_frequency_value",
         )
+        _install_live_frequency_audio(int(puzzle["target"]))
+
         if st.button(
-            "📶 TESTEAZĂ FRECVENȚA",
+            "📶 VERIFICĂ ȘI BLOCHEAZĂ SEMNALUL",
             use_container_width=True,
             type="primary",
             key="pink_tune_frequency",

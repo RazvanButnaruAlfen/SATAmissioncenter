@@ -143,14 +143,23 @@ def tune_frequency(today: date, value: int) -> bool:
     state["attempts"] = int(state.get("attempts", 0)) + 1
     delta = value - target
 
-    if abs(delta) <= 2:
+    if abs(delta) <= 5:
         unlock_reward(today)
         return True
 
-    if delta < 0:
-        state["feedback"] = "Semnal prea jos. Crește frecvența."
+    distance = abs(delta)
+
+    if distance <= 10:
+        proximity = "Ești foarte aproape de zona de blocare. "
+    elif distance <= 22:
+        proximity = "Semnalul devine mai clar. "
     else:
-        state["feedback"] = "Semnal prea sus. Redu frecvența."
+        proximity = "Semnal încă slab. "
+
+    if delta < 0:
+        state["feedback"] = proximity + "Crește frecvența."
+    else:
+        state["feedback"] = proximity + "Redu frecvența."
     return False
 
 
