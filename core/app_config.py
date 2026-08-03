@@ -1,7 +1,7 @@
 APP_VERSION = "0.7.0 RC1"
-RELEASE_MODE = True
-SHOW_BUILD_MARKERS = False
-SHOW_RESPONSIVE_DEBUG = False
+RELEASE_MODE = False
+SHOW_BUILD_MARKERS = True
+SHOW_RESPONSIVE_DEBUG = True
 
-APP_TITLE = "S.A.T.A. Mission Center"
+APP_TITLE = "S.A.T.A. Mission Center Developer Mode"
 APP_ICON = "📡"
