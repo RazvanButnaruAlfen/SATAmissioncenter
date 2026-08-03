@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1 RC2 — Poetry Line Break Fix
+- Secvențele `\\n` sunt transformate în rânduri noi la afișarea transmisiilor lirice.
+- Sunt acceptate și newline-urile reale din conținut.
+
+# Changelog
+
 ## 0.6.0 RC1 — PINK ARCHIVES
 - Adăugat modulul intim PINK ARCHIVES.
 - Adăugate două tipuri de puzzle: anagramă și reglarea frecvenței.
